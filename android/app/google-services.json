@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "927912877297",
-    "firebase_url": "https://g4stro-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "g4stro",
-    "storage_bucket": "g4stro.appspot.com"
+    "project_number": "383974186515",
+    "firebase_url": "https://gastr0-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "gastr0",
+    "storage_bucket": "gastr0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927912877297:android:b16648a22585651da5dd50",
+        "mobilesdk_app_id": "1:383974186515:android:a98bdb99830db4d6ffe9e6",
         "android_client_info": {
           "package_name": "com.example.datasave"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA"
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
         }
       ],
       "services": {
@@ -27,7 +27,45 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927912877297:android:c560441dc31dc544a5dd50",
+        "mobilesdk_app_id": "1:383974186515:android:e3047d7ea266ff51ffe9e6",
+        "android_client_info": {
+          "package_name": "com.example.datenbeispiel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383974186515:android:ee3e6851a981ee23ffe9e6",
+        "android_client_info": {
+          "package_name": "com.example.gastrogo_einstellungen_v1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383974186515:android:b9744ecbf4f5319dffe9e6",
         "android_client_info": {
           "package_name": "com.example.login"
         }
@@ -35,7 +73,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA"
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
         }
       ],
       "services": {
@@ -46,15 +84,15 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927912877297:android:1fd46470bc24a5e6a5dd50",
+        "mobilesdk_app_id": "1:383974186515:android:6c50a866630422a3ffe9e6",
         "android_client_info": {
-          "package_name": "com.example.schluesselgenerieren"
+          "package_name": "com.example.mitarbeiterverwaltung"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA"
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
         }
       ],
       "services": {
@@ -65,7 +103,26 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927912877297:android:5590d217ad592113a5dd50",
+        "mobilesdk_app_id": "1:383974186515:android:dce2426d9131214cffe9e6",
+        "android_client_info": {
+          "package_name": "com.example.qrcodegenerator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383974186515:android:2b8c8dc3ea7f4a44ffe9e6",
         "android_client_info": {
           "package_name": "com.example.searchbar"
         }
@@ -73,7 +130,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA"
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
         }
       ],
       "services": {
@@ -84,7 +141,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927912877297:android:d0203a4855b05ceaa5dd50",
+        "mobilesdk_app_id": "1:383974186515:android:8b4099208df8c67bffe9e6",
         "android_client_info": {
           "package_name": "com.gastro.gastro"
         }
@@ -92,7 +149,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA"
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
         }
       ],
       "services": {
@@ -103,7 +160,26 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927912877297:android:2a3632039a393f7ea5dd50",
+        "mobilesdk_app_id": "1:383974186515:android:a698eaf1f47a958affe9e6",
+        "android_client_info": {
+          "package_name": "com.gastrogo.sortierte_bestellungen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383974186515:android:349fc55c1c3cfb8fffe9e6",
         "android_client_info": {
           "package_name": "com.gastrogo.sortierte_bestellungen_2"
         }
@@ -111,7 +187,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA"
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
         }
       ],
       "services": {

@@ -50,21 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD5W8McTzUR98wgasKyvoaCaqmdk03nIaA',
-    appId: '1:927912877297:android:d0203a4855b05ceaa5dd50',
-    messagingSenderId: '927912877297',
-    projectId: 'g4stro',
-    databaseURL: 'https://g4stro-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'g4stro.appspot.com',
+    apiKey: 'AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic',
+    appId: '1:383974186515:android:8b4099208df8c67bffe9e6',
+    messagingSenderId: '383974186515',
+    projectId: 'gastr0',
+    databaseURL: 'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'gastr0.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBTXoGt3tJTHveuEJ-2YlNNIr9Od67g7tU',
-    appId: '1:927912877297:ios:ab7cba67c846d3b9a5dd50',
-    messagingSenderId: '927912877297',
-    projectId: 'g4stro',
-    databaseURL: 'https://g4stro-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'g4stro.appspot.com',
+    apiKey: 'AIzaSyDuDBGv5MsWu-2n7yHjAbTubP_02w97e_Y',
+    appId: '1:383974186515:ios:46f3de95bdc43696ffe9e6',
+    messagingSenderId: '383974186515',
+    projectId: 'gastr0',
+    databaseURL: 'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'gastr0.appspot.com',
     iosBundleId: 'com.gastro.gastro',
   );
 }
