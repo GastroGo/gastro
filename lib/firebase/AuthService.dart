@@ -20,4 +20,11 @@ class AuthService {
       return null;
     }
   }
+
+  signOut() {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      _auth.signOut();
+    }
+  }
 }

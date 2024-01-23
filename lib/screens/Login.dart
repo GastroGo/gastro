@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
+import 'package:gastro/screens/Homepage.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -54,6 +55,10 @@ class _LoginState extends State<Login> {
                     } else {
                       print('Signed in');
                       print(result);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Homepage(user: result)),
+                      );
                     }
                   }
                 },
