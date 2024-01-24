@@ -1,20 +1,17 @@
-import 'dart:async';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
+import 'package:gastro/screens/CreateRestaurant.dart';
 import 'package:gastro/screens/Homepage.dart';
-import 'package:gastro/screens/Register.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'Login.dart';
 
-import 'Dashboard.dart';
-
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _RegsiterState createState() => _RegsiterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegsiterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String email = '';
@@ -24,7 +21,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
@@ -52,44 +49,38 @@ class _LoginState extends State<Login> {
                 ),
               ),
               ElevatedButton(
-                child: Text('Login'),
+                child: Text('Register'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    dynamic result = await _auth.signInWithEmailAndPassword(email, password);
+                    dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                     if (result == null) {
                       print('Could not sign in with those credentials');
                     } else {
-                      print('Signed in');
+                      print('Registered');
                       print(result);
-
-                      DatabaseReference ref = FirebaseDatabase.instance.ref("Restaurants");
-                      ref.orderByChild("daten/uid").equalTo(result.uid).once().then((DatabaseEvent event) {
-                        DataSnapshot snapshot = event.snapshot;
-
-                        if (snapshot.value != null) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => Dashboard(user: result)),
-                          );
-                        } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => Homepage(user: result)),
-                          );
-                        }
-                      });
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Homepage(user: result)),
+                      );
                     }
                   }
                 },
               ),
               ElevatedButton(
-                child: Text('Click to register'),
+                child: Text('Click to login'),
                 onPressed: () async {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => Register()),
-                  );
-                },
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );                },
+              ),
+              ElevatedButton(
+                child: Text('Click to create a restaurant'),
+                onPressed: () async {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateRestaurant()),
+                  );                },
               ),
             ],
           ),
