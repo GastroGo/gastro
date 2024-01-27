@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic',
-    appId: '1:383974186515:android:8b4099208df8c67bffe9e6',
+    appId: '1:383974186515:android:6aad7bb92a7b8f01ffe9e6',
     messagingSenderId: '383974186515',
     projectId: 'gastr0',
     databaseURL: 'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
@@ -60,11 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDuDBGv5MsWu-2n7yHjAbTubP_02w97e_Y',
-    appId: '1:383974186515:ios:46f3de95bdc43696ffe9e6',
+    appId: '1:383974186515:ios:7fba9d8a341a1e02ffe9e6',
     messagingSenderId: '383974186515',
     projectId: 'gastr0',
     databaseURL: 'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gastr0.appspot.com',
-    iosBundleId: 'com.gastro.gastro',
+    iosBundleId: 'com.gastro.go',
   );
 }
