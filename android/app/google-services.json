@@ -160,6 +160,25 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:383974186515:android:6aad7bb92a7b8f01ffe9e6",
+        "android_client_info": {
+          "package_name": "com.gastro.go"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtWxdAN4OLPax5D3LDLGtaF_r3EPCy0Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:383974186515:android:a698eaf1f47a958affe9e6",
         "android_client_info": {
           "package_name": "com.gastrogo.sortierte_bestellungen"
