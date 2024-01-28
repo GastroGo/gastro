@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
@@ -82,14 +83,17 @@ class _LoginState extends State<Login> {
                   }
                 },
               ),
-              ElevatedButton(
-                child: Text('Click to register'),
-                onPressed: () async {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Register()),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Register()),
+                      );
+                  },
+                  child: Text("Click to register", style: TextStyle(fontSize: 18),),
+                ),
               ),
             ],
           ),
