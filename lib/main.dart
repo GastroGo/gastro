@@ -72,7 +72,7 @@ class App extends StatelessWidget {
             );
           }
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );
