@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
                   onTap: () {
                       Navigator.pushReplacement(

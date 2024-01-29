@@ -118,13 +118,17 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   }
                 },
               ),
-              ElevatedButton(
-                child: Text('Click to register'),
-                onPressed: () async {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Register()),
-                  );                },
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Register()),
+                    );
+                  },
+                  child: Text("Click to register", style: TextStyle(fontSize: 18),),
+                ),
               ),
             ],
           ),

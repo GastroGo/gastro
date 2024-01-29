@@ -21,7 +21,11 @@ class _RegsiterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+            color: Colors.black
+        ),
         title: Text('Register'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
@@ -66,21 +70,29 @@ class _RegsiterState extends State<Register> {
                   }
                 },
               ),
-              ElevatedButton(
-                child: Text('Click to login'),
-                onPressed: () async {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );                },
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Login()),
+                    );
+                  },
+                  child: Text("Click to login", style: TextStyle(fontSize: 18),),
+                ),
               ),
-              ElevatedButton(
-                child: Text('Click to create a restaurant'),
-                onPressed: () async {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreateRestaurant()),
-                  );                },
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateRestaurant()),
+                    );
+                  },
+                  child: Text("Create Restaurant", style: TextStyle(fontSize: 18),),
+                ),
               ),
             ],
           ),
