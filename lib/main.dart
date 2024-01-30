@@ -12,7 +12,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   runApp(App());
 }
 
@@ -24,7 +23,8 @@ class App extends StatelessWidget {
       return false;
     } else {
       DatabaseReference ref = FirebaseDatabase.instance.ref("Restaurants");
-      DatabaseEvent event = await ref.orderByChild("daten/uid").equalTo(user.uid).once();
+      DatabaseEvent event =
+          await ref.orderByChild("daten/uid").equalTo(user.uid).once();
       DataSnapshot snapshot = event.snapshot;
       return snapshot.value != null;
     }
@@ -59,12 +59,14 @@ class App extends StatelessWidget {
                 future: _getUserData(user),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else {
-                      return snapshot.data ? Dashboard(user: user) : Homepage(user: user);
+                      return snapshot.data
+                          ? Dashboard(user: user)
+                          : Homepage(user: user);
                     }
                   }
                 },

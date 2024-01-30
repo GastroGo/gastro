@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/screens/Homepage.dart';
 import 'package:gastro/screens/Register.dart';
-
-import 'Dashboard.dart';
+import 'package:gastro/screens/Dashboard.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -47,7 +45,8 @@ class _LoginState extends State<Login> {
                 onChanged: (value) {
                   setState(() => password = value);
                 },
-                validator: (value) => value!.length < 6 ? 'Enter a password 6+ chars long' : null,
+                validator: (value) =>
+                    value!.length < 6 ? 'Enter a password 6+ chars long' : null,
                 decoration: InputDecoration(
                   labelText: 'Password',
                 ),
@@ -56,26 +55,34 @@ class _LoginState extends State<Login> {
                 child: Text('Login'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    dynamic result = await _auth.signInWithEmailAndPassword(email, password);
+                    dynamic result =
+                        await _auth.signInWithEmailAndPassword(email, password);
                     if (result == null) {
                       print('Could not sign in with those credentials');
                     } else {
                       print('Signed in');
                       print(result);
 
-                      DatabaseReference ref = FirebaseDatabase.instance.ref("Restaurants");
-                      ref.orderByChild("daten/uid").equalTo(result.uid).once().then((DatabaseEvent event) {
+                      DatabaseReference ref =
+                          FirebaseDatabase.instance.ref("Restaurants");
+                      ref
+                          .orderByChild("daten/uid")
+                          .equalTo(result.uid)
+                          .once()
+                          .then((DatabaseEvent event) {
                         DataSnapshot snapshot = event.snapshot;
 
                         if (snapshot.value != null) {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => Dashboard(user: result)),
+                            MaterialPageRoute(
+                                builder: (context) => Dashboard(user: result)),
                           );
                         } else {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => Homepage(user: result)),
+                            MaterialPageRoute(
+                                builder: (context) => Homepage(user: result)),
                           );
                         }
                       });
@@ -87,12 +94,15 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
                   onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => Register()),
-                      );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Register()),
+                    );
                   },
-                  child: Text("Click to register", style: TextStyle(fontSize: 18),),
+                  child: Text(
+                    "Click to register",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
             ],

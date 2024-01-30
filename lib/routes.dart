@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gastro/screens/CreateRestaurant.dart';
+import 'package:gastro/screens/Dashboard.dart';
 import 'package:gastro/screens/Homepage.dart';
-
-import 'screens/Login.dart';
-import 'screens/Register.dart';
-import 'app_routes.dart';
+import 'package:gastro/screens/Login.dart';
+import 'package:gastro/screens/Register.dart';
+import 'package:gastro/app_routes.dart';
 
 class Routes {
   const Routes._();
@@ -28,11 +29,19 @@ class Routes {
       case AppRoutes.register:
         return getRoute(widget: Register());
 
-      case AppRoutes.home:
-        return getRoute(widget: Homepage(user: FirebaseAuth.instance.currentUser!));
+      case AppRoutes.createRestaurant:
+        return getRoute(widget: CreateRestaurant());
 
-    /// An invalid route. User shouldn't see this,
-    /// it's for debugging purpose only.
+      case AppRoutes.home:
+        return getRoute(
+            widget: Homepage(user: FirebaseAuth.instance.currentUser!));
+
+      case AppRoutes.dashboard:
+        return getRoute(
+            widget: Dashboard(user: FirebaseAuth.instance.currentUser!));
+
+      /// An invalid route. User shouldn't see this,
+      /// it's for debugging purpose only.
       default:
         return getRoute(widget: Login());
     }

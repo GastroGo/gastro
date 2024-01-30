@@ -4,7 +4,7 @@ import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/screens/CreateRestaurant.dart';
 import 'package:gastro/screens/Homepage.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'Login.dart';
+import 'package:gastro/screens/Login.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -21,10 +21,8 @@ class _RegsiterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-            color: Colors.black
-        ),
-        title: Text('Register'),
+        leading: const BackButton(color: Colors.black),
+        title: const Text('Register'),
         centerTitle: true,
       ),
       body: Padding(
@@ -38,7 +36,7 @@ class _RegsiterState extends State<Register> {
                   setState(() => email = value);
                 },
                 validator: (value) => value!.isEmpty ? 'Enter an email' : null,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email',
                 ),
               ),
@@ -47,16 +45,18 @@ class _RegsiterState extends State<Register> {
                 onChanged: (value) {
                   setState(() => password = value);
                 },
-                validator: (value) => value!.length < 6 ? 'Enter a password 6+ chars long' : null,
-                decoration: InputDecoration(
+                validator: (value) =>
+                    value!.length < 6 ? 'Enter a password 6+ chars long' : null,
+                decoration: const InputDecoration(
                   labelText: 'Password',
                 ),
               ),
               ElevatedButton(
-                child: Text('Register'),
+                child: const Text('Register'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                    dynamic result = await _auth.registerWithEmailAndPassword(
+                        email, password);
                     if (result == null) {
                       print('Could not sign in with those credentials');
                     } else {
@@ -64,7 +64,8 @@ class _RegsiterState extends State<Register> {
                       print(result);
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Homepage(user: result)),
+                        MaterialPageRoute(
+                            builder: (context) => Homepage(user: result)),
                       );
                     }
                   }
@@ -79,7 +80,10 @@ class _RegsiterState extends State<Register> {
                       MaterialPageRoute(builder: (context) => Login()),
                     );
                   },
-                  child: Text("Click to login", style: TextStyle(fontSize: 18),),
+                  child: const Text(
+                    "Click to login",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
               Padding(
@@ -88,10 +92,14 @@ class _RegsiterState extends State<Register> {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => CreateRestaurant()),
+                      MaterialPageRoute(
+                          builder: (context) => CreateRestaurant()),
                     );
                   },
-                  child: Text("Create Restaurant", style: TextStyle(fontSize: 18),),
+                  child: const Text(
+                    "Create Restaurant",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
             ],
