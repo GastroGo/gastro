@@ -54,7 +54,8 @@ class DefaultFirebaseOptions {
     appId: '1:383974186515:android:6aad7bb92a7b8f01ffe9e6',
     messagingSenderId: '383974186515',
     projectId: 'gastr0',
-    databaseURL: 'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gastr0.appspot.com',
   );
 
@@ -63,7 +64,8 @@ class DefaultFirebaseOptions {
     appId: '1:383974186515:ios:7fba9d8a341a1e02ffe9e6',
     messagingSenderId: '383974186515',
     projectId: 'gastr0',
-    databaseURL: 'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://gastr0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gastr0.appspot.com',
     iosBundleId: 'com.gastro.go',
   );

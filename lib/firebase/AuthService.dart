@@ -6,7 +6,8 @@ class AuthService {
 
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       User? user = result.user;
       return user;
     } catch (e) {
@@ -24,7 +25,8 @@ class AuthService {
 
   Future registerWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       User? user = result.user;
       return user;
     } catch (e) {
@@ -40,14 +42,17 @@ class AuthService {
     }
   }
 
-  Future createRestaurant(String email, String password, String name, String place, String street, int zip, String housenumber) async {
+  Future createRestaurant(String email, String password, String name,
+      String place, String street, int zip, String housenumber) async {
     try {
       // Erstelle einen neuen Benutzer
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       User? user = result.user;
 
       // Erstelle einen neuen Eintrag in der Firebase-Datenbank
-      DatabaseReference ref = FirebaseDatabase.instance.ref("Restaurants").push();
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref("Restaurants").push();
       await ref.set({
         'daten': {
           'name': name,

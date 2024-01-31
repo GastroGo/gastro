@@ -23,9 +23,10 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.gastro.gastro"
+    namespace "com.gastro.go"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+    minSdkVersion 30
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

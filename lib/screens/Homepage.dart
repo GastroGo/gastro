@@ -6,6 +6,7 @@ import 'Login.dart';
 
 class Homepage extends StatefulWidget {
   final User user;
+
   Homepage({required this.user});
 
   @override

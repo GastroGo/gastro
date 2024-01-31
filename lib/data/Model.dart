@@ -4,7 +4,11 @@ class Restaurant {
   Map<String, Gericht> speisekarte;
   Map<String, Tisch> tische;
 
-  Restaurant({required this.id, required this.daten, required this.speisekarte, required this.tische});
+  Restaurant(
+      {required this.id,
+      required this.daten,
+      required this.speisekarte,
+      required this.tische});
 }
 
 class Daten {
@@ -16,7 +20,14 @@ class Daten {
   String strasse;
   String uid;
 
-  Daten({required this.hausnr, required this.name, required this.ort, required this.plz, required this.speisekarte, required this.strasse, required this.uid});
+  Daten(
+      {required this.hausnr,
+      required this.name,
+      required this.ort,
+      required this.plz,
+      required this.speisekarte,
+      required this.strasse,
+      required this.uid});
 }
 
 class Gericht {
@@ -36,9 +47,18 @@ class Zutaten {
 }
 
 class Tisch {
-  Map<String, int> bestellungen;
-  Map<String, int> geschlosseneBestellungen;
+  Bestellungen bestellungen;
+  Bestellungen geschlosseneBestellungen;
   int personen;
 
-  Tisch({required this.bestellungen, required this.geschlosseneBestellungen, required this.personen});
+  Tisch(
+      {required this.bestellungen,
+      required this.geschlosseneBestellungen,
+      required this.personen});
+}
+
+class Bestellungen {
+  int gericht;
+
+  Bestellungen({required this.gericht});
 }

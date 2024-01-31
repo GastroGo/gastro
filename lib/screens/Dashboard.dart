@@ -6,6 +6,7 @@ import 'Login.dart';
 
 class Dashboard extends StatefulWidget {
   final User user;
+
   Dashboard({required this.user});
 
   @override
