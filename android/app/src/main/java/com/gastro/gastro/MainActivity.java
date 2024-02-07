@@ -1,4 +1,4 @@
-package com.gastro.gastro;
+package com.gastro.go;
 
 import io.flutter.embedding.android.FlutterActivity;
 
