@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
-
 import 'Login.dart';
 
 class Dashboard extends StatefulWidget {
@@ -15,6 +14,18 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final AuthService _auth = AuthService();
+
+  Future<void> setRestaurantDisplayName() async {
+    try {
+      await widget.user.updateDisplayName('restaurant');
+      print('Display name set to restaurant');
+      // Reload the user to get the updated user object with the new display name
+      await widget.user.reload();
+      setState(() {});
+    } catch (e) {
+      print('Error setting display name: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +47,18 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       body: Center(
-        child: Text('Welcome ${widget.user?.email ?? 'Restaurant'}'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Display Name: ${widget.user.displayName ?? 'Restaurant'}'),
+            Text('Email: ${widget.user.email ?? ''}'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: setRestaurantDisplayName,
+              child: Text('Set Display Name to Restaurant'),
+            ),
+          ],
+        ),
       ),
     );
   }

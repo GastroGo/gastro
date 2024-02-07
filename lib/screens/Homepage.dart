@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
-
 import 'Login.dart';
 
 class Homepage extends StatefulWidget {
@@ -15,6 +14,18 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final AuthService _auth = AuthService();
+
+  Future<void> setUserDisplayName() async {
+    try {
+      await widget.user.updateDisplayName('user');
+      print('Display name set to user');
+      // Reload the user to get the updated user object with the new display name
+      await widget.user.reload();
+      setState(() {});
+    } catch (e) {
+      print('Error setting display name: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +47,18 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
       body: Center(
-        child: Text('Welcome ${widget.user?.email ?? 'Guest'}'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Display Name: ${widget.user.displayName ?? 'Guest'}'),
+            Text('Email: ${widget.user.email ?? ''}'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: setUserDisplayName,
+              child: Text('Set Display Name to User'),
+            ),
+          ],
+        ),
       ),
     );
   }

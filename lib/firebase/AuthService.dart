@@ -29,7 +29,7 @@ class AuthService {
           email: email, password: password);
       User? user = result.user;
 
-      await user?.updateProfile(displayName: 'user');
+      await user?.updateDisplayName('user');
 
       return user;
     } catch (e) {
@@ -53,7 +53,7 @@ class AuthService {
           email: email, password: password);
       User? user = result.user;
 
-      await user?.updateProfile(displayName: 'restaurant');
+      await user?.updateDisplayName('restaurant');
 
       // Erstelle einen neuen Eintrag in der Firebase-Datenbank
       DatabaseReference ref =

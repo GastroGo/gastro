@@ -25,15 +25,16 @@ class _GastroAppState extends State<GastroApp> {
 
   @override
   Widget build(BuildContext context) {
+    userType = user?.displayName ?? ''; // It will be 'user' or 'restaurant'
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppStrings.loginAndRegister,
       theme: AppTheme.themeData,
-
-      userType = user.displayName ?? ''; // It will be 'user' or 'restaurant'
-
-
-      initialRoute: user != null ? AppRoutes.home : AppRoutes.login,
+      initialRoute: user != null
+          ? userType == 'user'
+            ? AppRoutes.home
+            : AppRoutes.dashboard
+          : AppRoutes.login,
       onGenerateRoute: Routes.generateRoute,
     );
   }
