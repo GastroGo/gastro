@@ -5,7 +5,7 @@ import 'package:gastro/screens/Dashboard.dart';
 import 'package:gastro/screens/Homepage.dart';
 import 'package:gastro/screens/Login.dart';
 import 'package:gastro/screens/Register.dart';
-import 'package:gastro/app_routes.dart';
+import 'package:gastro/values/app_routes.dart';
 
 class Routes {
   const Routes._();
