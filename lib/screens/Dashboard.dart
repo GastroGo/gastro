@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
-import 'Login.dart';
+
+import '../utils/helpers/navigation_helper.dart';
+import '../values/app_routes.dart';
 
 class Dashboard extends StatefulWidget {
   final User user;
@@ -26,10 +28,7 @@ class _DashboardState extends State<Dashboard> {
             label: Text('Logout'),
             onPressed: () async {
               await _auth.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
+              NavigationHelper.pushReplacementNamed(AppRoutes.login);
             },
           ),
         ],
