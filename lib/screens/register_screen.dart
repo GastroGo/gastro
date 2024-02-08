@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
-import 'package:gastro/screens/Homepage.dart';
+import 'package:gastro/screens/home_screen.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
@@ -16,6 +16,14 @@ class _RegsiterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
+
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +48,20 @@ class _RegsiterState extends State<Register> {
                 ),
               ),
               TextFormField(
-                obscureText: true,
+                obscureText: _obscureText,
                 onChanged: (value) {
                   setState(() => password = value);
                 },
                 validator: (value) =>
-                    value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
-                decoration: const InputDecoration(
+                value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
+                decoration: InputDecoration(
                   labelText: AppStrings.password,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
                 ),
               ),
               ElevatedButton(

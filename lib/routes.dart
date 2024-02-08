@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gastro/screens/CreateRestaurant.dart';
-import 'package:gastro/screens/Dashboard.dart';
-import 'package:gastro/screens/Homepage.dart';
-import 'package:gastro/screens/Login.dart';
-import 'package:gastro/screens/Register.dart';
+import 'package:gastro/screens/create_restaurant_screen.dart';
+import 'package:gastro/screens/dasboard_screen.dart';
+import 'package:gastro/screens/home_screen.dart';
+import 'package:gastro/screens/login_screen.dart';
+import 'package:gastro/screens/register_screen.dart';
 import 'package:gastro/values/app_routes.dart';
 
 class Routes {

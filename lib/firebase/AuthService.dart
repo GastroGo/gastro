@@ -16,7 +16,9 @@ class AuthService {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          print('The password provided is wrong.');
+        } else if (e.code == 'account-exists-with-different-credential') {
+          throw Exception('An account already exists with a different credential.');
         }
       }
       return null;

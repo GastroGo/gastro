@@ -5,6 +5,8 @@ class AppStrings {
   static const String uhOhPageNotFound = 'uh-oh!\nPage not found';
   static const String register = 'Register';
   static const String login = 'Login';
+  static const String homepage = 'Homepage';
+  static const String dashboard = 'Dashboard';
   static const String createYourAccount = 'Create your account';
   static const String doNotHaveAnAccount = "Don't have an account?";
   static const String facebook = 'Facebook';
@@ -16,6 +18,7 @@ class AppStrings {
   static const String forgotPassword = 'Forgot Password?';
   static const String orLoginWith = 'or Login with';
   static const String couldNot = 'Could not sign in with those credentials';
+  static const String logout = 'Logout';
 
   static const String loggedIn = 'Logged In!';
   static const String registrationComplete = 'Registration Complete!';

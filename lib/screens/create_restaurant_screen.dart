@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
+import 'package:gastro/values/app_routes.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_strings.dart';
-import 'Dashboard.dart';
-import 'Login.dart';
+import 'dasboard_screen.dart';
+import 'login_screen.dart';
 
 class CreateRestaurant extends StatefulWidget {
   const CreateRestaurant({super.key});
@@ -23,6 +24,14 @@ class _CreateRestaurant extends State<CreateRestaurant> {
   int zip = 0;
   String street = '';
   String housenumber = '';
+
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,22 +58,28 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   ),
                 ),
                 TextFormField(
-                  obscureText: true,
+                  obscureText: _obscureText,
                   onChanged: (value) {
                     setState(() => password = value);
                   },
-                  validator: (value) => value!.length < 6
-                      ? AppStrings.pleaseEnterPassword
-                      : null,
+                  validator: (value) =>
+                  value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
                   decoration: InputDecoration(
                     labelText: AppStrings.password,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
                   ),
                 ),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => name = value);
                   },
-                  validator: (value) => value!.isEmpty ? AppStrings.pleaseEnterName : null,
+                  validator: (value) =>
+                      value!.isEmpty ? AppStrings.pleaseEnterName : null,
                   decoration: InputDecoration(
                     labelText: AppStrings.name,
                   ),
@@ -73,7 +88,8 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   onChanged: (value) {
                     setState(() => place = value);
                   },
-                  validator: (value) => value!.isEmpty ? AppStrings.pleaseEnterPlace : null,
+                  validator: (value) =>
+                      value!.isEmpty ? AppStrings.pleaseEnterPlace : null,
                   decoration: InputDecoration(
                     labelText: AppStrings.place,
                   ),
@@ -92,7 +108,8 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   onChanged: (value) {
                     setState(() => zip = int.parse(value));
                   },
-                  validator: (value) => value!.isEmpty ? AppStrings.pleaseEnterZip : null,
+                  validator: (value) =>
+                      value!.isEmpty ? AppStrings.pleaseEnterZip : null,
                   decoration: InputDecoration(
                     labelText: AppStrings.zip,
                   ),
@@ -131,10 +148,10 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   padding: const EdgeInsets.only(top: 20),
                   child: InkWell(
                     onTap: () {
-                      NavigationHelper.popUntil(context, (AppRoutes.login) => false);
+                      NavigationHelper.pop(context);
                     },
                     child: Text(
-                      AppStrings.iHaveAnAccount,
+                      AppStrings.doNotHaveAnAccount,
                       style: TextStyle(fontSize: 18),
                     ),
                   ),

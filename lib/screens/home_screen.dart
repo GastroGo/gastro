@@ -4,6 +4,7 @@ import 'package:gastro/firebase/AuthService.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
+import '../values/app_strings.dart';
 
 class Homepage extends StatefulWidget {
   final User user;
@@ -21,11 +22,11 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Homepage'),
+        title: Text(AppStrings.homepage),
         actions: <Widget>[
           TextButton.icon(
             icon: Icon(Icons.person),
-            label: Text('Logout'),
+            label: Text(AppStrings.logout),
             onPressed: () async {
               await _auth.signOut();
               NavigationHelper.pushReplacementNamed(
