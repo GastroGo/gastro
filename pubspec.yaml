@@ -15,6 +15,7 @@ dependencies:
   firebase_auth: ^4.4.6
   firebase_database: ^10.4.0
   firebase_performance: ^0.9.3+8
+  google_maps_flutter: ^2.5.3
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"

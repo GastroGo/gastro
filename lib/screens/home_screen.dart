@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
@@ -17,6 +18,14 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final AuthService _auth = AuthService();
+  late GoogleMapController mapController;
+
+  final LatLng _center = const LatLng(45.521563, -122.677433);
+
+  void _onMapCreated(GoogleMapController controller) {
+    print('Map is created');
+    mapController = controller;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +45,15 @@ class _HomepageState extends State<Homepage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Display Name: ${widget.user.displayName ?? 'Guest'}'),
-            Text('Email: ${widget.user.email ?? ''}'),
-            SizedBox(height: 20),
-          ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: _center,
+            zoom: 11.0,
+          ),
         ),
       ),
     );

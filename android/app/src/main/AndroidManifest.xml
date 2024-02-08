@@ -5,6 +5,8 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="gastro">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA22rUkrcarmOYWGyTu789MqTRmXoEFPbs"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -20,8 +22,6 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
-            <meta-data android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyBmTdKR4YI0DqvIGoQlNlZOmuBtjbnScVY"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
