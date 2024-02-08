@@ -15,18 +15,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final AuthService _auth = AuthService();
 
-  Future<void> setRestaurantDisplayName() async {
-    try {
-      await widget.user.updateDisplayName('restaurant');
-      print('Display name set to restaurant');
-      // Reload the user to get the updated user object with the new display name
-      await widget.user.reload();
-      setState(() {});
-    } catch (e) {
-      print('Error setting display name: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,10 +41,6 @@ class _DashboardState extends State<Dashboard> {
             Text('Display Name: ${widget.user.displayName ?? 'Restaurant'}'),
             Text('Email: ${widget.user.email ?? ''}'),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: setRestaurantDisplayName,
-              child: Text('Set Display Name to Restaurant'),
-            ),
           ],
         ),
       ),
