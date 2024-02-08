@@ -1,12 +1,12 @@
-import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
-import 'package:gastro/screens/Homepage.dart';
-import 'package:gastro/screens/Register.dart';
-import 'package:gastro/screens/Dashboard.dart';
+import 'package:gastro/screens/dasboard_screen.dart';
+import 'package:gastro/screens/home_screen.dart';
+
+import '../utils/helpers/navigation_helper.dart';
+import '../values/app_routes.dart';
+import '../values/app_strings.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -19,11 +19,19 @@ class _LoginState extends State<Login> {
   String email = '';
   String password = '';
 
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text(AppStrings.login),
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
@@ -35,32 +43,38 @@ class _LoginState extends State<Login> {
                 onChanged: (value) {
                   setState(() => email = value);
                 },
-                validator: (value) => value!.isEmpty ? 'Enter an email' : null,
+                validator: (value) => value!.isEmpty ? AppStrings.enterAnEmail : null,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: AppStrings.email,
                 ),
               ),
               TextFormField(
-                obscureText: true,
+                obscureText: _obscureText,
                 onChanged: (value) {
                   setState(() => password = value);
                 },
                 validator: (value) =>
-                    value!.length < 6 ? 'Enter a password 6+ chars long' : null,
+                value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: AppStrings.password,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
                 ),
               ),
               ElevatedButton(
-                child: Text('Login'),
+                child: Text(AppStrings.login),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     dynamic result =
                         await _auth.signInWithEmailAndPassword(email, password);
                     if (result == null) {
-                      print('Could not sign in with those credentials');
+                      print(AppStrings.couldNot);
                     } else {
-                      print('Signed in');
+                      print(AppStrings.loggedIn);
                       print(result);
 
                       DatabaseReference ref =
@@ -94,13 +108,10 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Register()),
-                    );
+                    NavigationHelper.pushNamed(AppRoutes.register);
                   },
                   child: Text(
-                    "Click to register",
+                    AppStrings.doNotHaveAnAccount,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),

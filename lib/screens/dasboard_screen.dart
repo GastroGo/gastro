@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 
-import 'Login.dart';
+import '../utils/helpers/navigation_helper.dart';
+import '../values/app_routes.dart';
+import '../values/app_strings.dart';
 
 class Dashboard extends StatefulWidget {
   final User user;
@@ -20,23 +22,27 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: Text(AppStrings.dashboard),
         actions: <Widget>[
           TextButton.icon(
             icon: Icon(Icons.person),
-            label: Text('Logout'),
+            label: Text(AppStrings.logout),
             onPressed: () async {
               await _auth.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => Login()),
-              );
+              NavigationHelper.pushReplacementNamed(AppRoutes.login);
             },
           ),
         ],
       ),
       body: Center(
-        child: Text('Welcome ${widget.user?.email ?? 'Restaurant'}'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Display Name: ${widget.user.displayName ?? 'Restaurant'}'),
+            Text('Email: ${widget.user.email ?? ''}'),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

@@ -16,7 +16,9 @@ class AuthService {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          print('The password provided is wrong.');
+        } else if (e.code == 'account-exists-with-different-credential') {
+          throw Exception('An account already exists with a different credential.');
         }
       }
       return null;
@@ -28,6 +30,9 @@ class AuthService {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User? user = result.user;
+
+      await user?.updateDisplayName('user');
+
       return user;
     } catch (e) {
       print(e.toString());
@@ -49,6 +54,8 @@ class AuthService {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User? user = result.user;
+
+      await user?.updateDisplayName('restaurant');
 
       // Erstelle einen neuen Eintrag in der Firebase-Datenbank
       DatabaseReference ref =

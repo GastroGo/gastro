@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gastro/firebase/AuthService.dart';
-import 'package:gastro/screens/CreateRestaurant.dart';
-import 'package:gastro/screens/Homepage.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:gastro/screens/Login.dart';
+import 'package:gastro/screens/home_screen.dart';
+
+import '../utils/helpers/navigation_helper.dart';
+import '../values/app_routes.dart';
+import '../values/app_strings.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -17,12 +17,19 @@ class _RegsiterState extends State<Register> {
   String email = '';
   String password = '';
 
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.black),
-        title: const Text('Register'),
+        title: Text(AppStrings.register),
         centerTitle: true,
       ),
       body: Padding(
@@ -35,32 +42,38 @@ class _RegsiterState extends State<Register> {
                 onChanged: (value) {
                   setState(() => email = value);
                 },
-                validator: (value) => value!.isEmpty ? 'Enter an email' : null,
+                validator: (value) => value!.isEmpty ? AppStrings.enterAnEmail : null,
                 decoration: const InputDecoration(
-                  labelText: 'Email',
+                  labelText: AppStrings.email,
                 ),
               ),
               TextFormField(
-                obscureText: true,
+                obscureText: _obscureText,
                 onChanged: (value) {
                   setState(() => password = value);
                 },
                 validator: (value) =>
-                    value!.length < 6 ? 'Enter a password 6+ chars long' : null,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
+                value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
+                decoration: InputDecoration(
+                  labelText: AppStrings.password,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
                 ),
               ),
               ElevatedButton(
-                child: const Text('Register'),
+                child: const Text(AppStrings.register),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     dynamic result = await _auth.registerWithEmailAndPassword(
                         email, password);
                     if (result == null) {
-                      print('Could not sign in with those credentials');
+                      print(AppStrings.couldNot);
                     } else {
-                      print('Registered');
+                      print(AppStrings.registrationComplete);
                       print(result);
                       Navigator.pushReplacement(
                         context,
@@ -75,13 +88,10 @@ class _RegsiterState extends State<Register> {
                 padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                    );
+                    NavigationHelper.pop(context);
                   },
                   child: const Text(
-                    "Click to login",
+                    AppStrings.iHaveAnAccount,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -90,14 +100,10 @@ class _RegsiterState extends State<Register> {
                 padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CreateRestaurant()),
-                    );
+                    NavigationHelper.pushNamed(AppRoutes.createRestaurant);
                   },
                   child: const Text(
-                    "Create Restaurant",
+                    AppStrings.createRestaurant,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
