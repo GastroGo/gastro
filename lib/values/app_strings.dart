@@ -7,6 +7,8 @@ class AppStrings {
   static const String login = 'Login';
   static const String homepage = 'Homepage';
   static const String dashboard = 'Dashboard';
+  static const String notifications = 'Notifications';
+  static const String manage = 'Manage';
   static const String createYourAccount = 'Create your account';
   static const String doNotHaveAnAccount = "Don't have an account?";
   static const String facebook = 'Facebook';

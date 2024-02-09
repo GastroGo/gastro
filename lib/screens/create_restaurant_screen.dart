@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/values/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_strings.dart';
@@ -161,6 +162,9 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                       } else {
                         print(AppStrings.registrationComplete);
                         print(result);
+                        String restaurantId = await _auth.getRestaurantId(result.uid);
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('restaurantId', restaurantId);
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

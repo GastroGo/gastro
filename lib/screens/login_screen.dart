@@ -4,7 +4,7 @@ import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/screens/dasboard_screen.dart';
 import 'package:gastro/screens/home_screen.dart';
 import 'package:gastro/values/app_theme.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
 import '../values/app_strings.dart';
@@ -115,6 +115,8 @@ class _LoginState extends State<Login> {
 
                               if (snapshot.value != null) {
                                 String restaurantId = await _auth.getRestaurantId(result.uid);
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('restaurantId', restaurantId);
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
