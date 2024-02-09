@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
@@ -19,6 +21,8 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final AuthService _auth = AuthService();
   late GoogleMapController mapController;
+
+  Location _locationController = Location();
 
   final LatLng _center = const LatLng(47.79497954602462, 9.481039555212321);
 
@@ -56,5 +60,15 @@ class _HomepageState extends State<Homepage> {
         ),
       ),
     );
+  }
+
+  Future<void> getLocationUpdates() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _locationController.serviceEnabled();
+    if (_serviceEnabled) {
+      _serviceEnabled = await _locationController.requestService();
+    }
   }
 }

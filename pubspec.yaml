@@ -17,6 +17,7 @@ dependencies:
   firebase_performance: ^0.9.3+8
   google_maps_flutter: ^2.5.3
   shared_preferences: ^2.2.2
+  location: ^5.0.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
