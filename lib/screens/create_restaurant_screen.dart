@@ -49,7 +49,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
               children: <Widget>[
                 TextFormField(
                   onChanged: (value) {
-                    setState(() => email = value);
+                    setState(() => email = value.trim());
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.enterAnEmail : null,
@@ -57,6 +57,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.email,
                   ),
                 ),
+                SizedBox(height: 6),
                 TextFormField(
                   obscureText: _obscureText,
                   onChanged: (value) {
@@ -74,6 +75,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => name = value);
@@ -84,6 +86,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.name,
                   ),
                 ),
+                SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => place = value);
@@ -94,6 +97,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.place,
                   ),
                 ),
+                SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => street = value);
@@ -104,6 +108,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.street,
                   ),
                 ),
+                SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => zip = int.parse(value));
@@ -114,6 +119,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.zip,
                   ),
                 ),
+                SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => housenumber = value);
@@ -124,6 +130,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.housenumber,
                   ),
                 ),
+                SizedBox(height: 6),
                 ElevatedButton(
                   child: Text(AppStrings.createRestaurant),
                   onPressed: () async {
@@ -143,18 +150,6 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                       }
                     }
                   },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: InkWell(
-                    onTap: () {
-                      NavigationHelper.pop(context);
-                    },
-                    child: Text(
-                      AppStrings.doNotHaveAnAccount,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
                 ),
               ],
             ),

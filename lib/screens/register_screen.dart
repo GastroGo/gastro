@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/screens/home_screen.dart';
+import 'package:gastro/values/app_theme.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
@@ -40,13 +41,14 @@ class _RegsiterState extends State<Register> {
             children: <Widget>[
               TextFormField(
                 onChanged: (value) {
-                  setState(() => email = value);
+                  setState(() => email = value.trim());
                 },
                 validator: (value) => value!.isEmpty ? AppStrings.enterAnEmail : null,
                 decoration: const InputDecoration(
                   labelText: AppStrings.email,
                 ),
               ),
+              SizedBox(height: 6),
               TextFormField(
                 obscureText: _obscureText,
                 onChanged: (value) {
@@ -64,6 +66,7 @@ class _RegsiterState extends State<Register> {
                   ),
                 ),
               ),
+              SizedBox(height: 6),
               ElevatedButton(
                 child: const Text(AppStrings.register),
                 onPressed: () async {
@@ -90,9 +93,9 @@ class _RegsiterState extends State<Register> {
                   onTap: () {
                     NavigationHelper.pop(context);
                   },
-                  child: const Text(
+                  child: Text(
                     AppStrings.iHaveAnAccount,
-                    style: TextStyle(fontSize: 18),
+                    style: AppTheme.bodySmall.copyWith(color: Colors.black),
                   ),
                 ),
               ),
@@ -102,9 +105,9 @@ class _RegsiterState extends State<Register> {
                   onTap: () {
                     NavigationHelper.pushNamed(AppRoutes.createRestaurant);
                   },
-                  child: const Text(
+                  child: Text(
                     AppStrings.createRestaurant,
-                    style: TextStyle(fontSize: 18),
+                    style: AppTheme.bodySmall.copyWith(color: Colors.black),
                   ),
                 ),
               ),

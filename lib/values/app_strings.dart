@@ -14,7 +14,7 @@ class AppStrings {
   static const String signInToYourNAccount = 'Sign in to your\nAccount';
   static const String signInToYourAccount = 'Sign in to your Account';
   static const String iHaveAnAccount = 'I have an account?';
-  static const String createRestaurant = 'Create restaurant';
+  static const String createRestaurant = 'New Restaurant';
   static const String forgotPassword = 'Forgot Password?';
   static const String orLoginWith = 'or Login with';
   static const String couldNot = 'Could not sign in with those credentials';

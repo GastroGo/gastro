@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/screens/dasboard_screen.dart';
 import 'package:gastro/screens/home_screen.dart';
+import 'package:gastro/values/app_theme.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
@@ -18,8 +19,8 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-
   bool _obscureText = true;
+  bool _isLoading = false;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -41,20 +42,22 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               TextFormField(
                 onChanged: (value) {
-                  setState(() => email = value);
+                  setState(() => email = value.trim());
                 },
-                validator: (value) => value!.isEmpty ? AppStrings.enterAnEmail : null,
+                validator: (value) =>
+                    value!.isEmpty ? AppStrings.enterAnEmail : null,
                 decoration: InputDecoration(
                   labelText: AppStrings.email,
                 ),
               ),
+              SizedBox(height: 6),
               TextFormField(
                 obscureText: _obscureText,
                 onChanged: (value) {
                   setState(() => password = value);
                 },
                 validator: (value) =>
-                value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
+                    value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
                 decoration: InputDecoration(
                   labelText: AppStrings.password,
                   suffixIcon: IconButton(
@@ -65,45 +68,56 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              ElevatedButton(
-                child: Text(AppStrings.login),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    dynamic result =
-                        await _auth.signInWithEmailAndPassword(email, password);
-                    if (result == null) {
-                      print(AppStrings.couldNot);
-                    } else {
-                      print(AppStrings.loggedIn);
-                      print(result);
+              SizedBox(height: 20),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : FilledButton(
+                      child: Text(AppStrings.login),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          dynamic result = await _auth
+                              .signInWithEmailAndPassword(email, password);
+                          if (result == null) {
+                            setState(() {
+                              _isLoading = false; // Setzen Sie _isLoading auf false, wenn der Anmeldevorgang abgeschlossen ist
+                            });
+                            print(AppStrings.couldNot);
+                          } else {
+                            print(AppStrings.loggedIn);
+                            print(result);
 
-                      DatabaseReference ref =
-                          FirebaseDatabase.instance.ref("Restaurants");
-                      ref
-                          .orderByChild("daten/uid")
-                          .equalTo(result.uid)
-                          .once()
-                          .then((DatabaseEvent event) {
-                        DataSnapshot snapshot = event.snapshot;
+                            DatabaseReference ref =
+                                FirebaseDatabase.instance.ref("Restaurants");
+                            ref
+                                .orderByChild("daten/uid")
+                                .equalTo(result.uid)
+                                .once()
+                                .then((DatabaseEvent event) {
+                              DataSnapshot snapshot = event.snapshot;
 
-                        if (snapshot.value != null) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Dashboard(user: result)),
-                          );
-                        } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Homepage(user: result)),
-                          );
+                              if (snapshot.value != null) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Dashboard(user: result)),
+                                );
+                              } else {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Homepage(user: result)),
+                                );
+                              }
+                            });
+                          }
                         }
-                      });
-                    }
-                  }
-                },
-              ),
+                      },
+                    ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
@@ -112,7 +126,7 @@ class _LoginState extends State<Login> {
                   },
                   child: Text(
                     AppStrings.doNotHaveAnAccount,
-                    style: TextStyle(fontSize: 18),
+                    style: AppTheme.bodySmall.copyWith(color: Colors.black),
                   ),
                 ),
               ),
