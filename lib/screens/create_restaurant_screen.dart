@@ -24,8 +24,20 @@ class _CreateRestaurant extends State<CreateRestaurant> {
   int zip = 0;
   String street = '';
   String housenumber = '';
-
   bool _obscureText = true;
+  bool _isButtonDisabled = true;
+
+  void _checkInput() {
+    if (email.isNotEmpty && password.isNotEmpty) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+    } else {
+      setState(() {
+        _isButtonDisabled = true;
+      });
+    }
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -50,6 +62,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() => email = value.trim());
+                    _checkInput();
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.enterAnEmail : null,
@@ -62,6 +75,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   obscureText: _obscureText,
                   onChanged: (value) {
                     setState(() => password = value);
+                    _checkInput();
                   },
                   validator: (value) =>
                   value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
@@ -79,6 +93,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() => name = value);
+                    _checkInput();
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterName : null,
@@ -90,6 +105,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() => place = value);
+                    _checkInput();
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterPlace : null,
@@ -101,6 +117,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() => street = value);
+                    _checkInput();
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterStreet : null,
@@ -112,6 +129,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() => zip = int.parse(value));
+                    _checkInput();
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterZip : null,
@@ -123,6 +141,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                 TextFormField(
                   onChanged: (value) {
                     setState(() => housenumber = value);
+                    _checkInput();
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterHousenumber : null,
@@ -130,14 +149,14 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     labelText: AppStrings.housenumber,
                   ),
                 ),
-                SizedBox(height: 6),
-                ElevatedButton(
+                SizedBox(height: 20),
+                FilledButton(
                   child: Text(AppStrings.createRestaurant),
-                  onPressed: () async {
+                  onPressed: _isButtonDisabled ? null : () async {
                     if (_formKey.currentState!.validate()) {
                       dynamic result = await _auth.createRestaurant(email,
                           password, name, place, street, zip, housenumber);
-                      if (result == null) {
+                      if (result['user'] == null) {
                         print(AppStrings.couldNot);
                       } else {
                         print(AppStrings.registrationComplete);
@@ -145,7 +164,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Dashboard(user: result)),
+                              builder: (context) => Dashboard(user: result['user'], id: result['restaurantId'])),
                         );
                       }
                     }

@@ -8,8 +8,9 @@ import '../values/app_strings.dart';
 
 class Dashboard extends StatefulWidget {
   final User user;
+  final String id;
 
-  Dashboard({required this.user});
+  Dashboard({required this.user, required this.id});
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -40,6 +41,7 @@ class _DashboardState extends State<Dashboard> {
           children: <Widget>[
             Text('Display Name: ${widget.user.displayName ?? 'Restaurant'}'),
             Text('Email: ${widget.user.email ?? ''}'),
+            Text('ID: ${widget.id}'),
             SizedBox(height: 20),
           ],
         ),

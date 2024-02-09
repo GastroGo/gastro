@@ -21,6 +21,19 @@ class _LoginState extends State<Login> {
   String password = '';
   bool _obscureText = true;
   bool _isLoading = false;
+  bool _isButtonDisabled = true;
+
+  void _checkInput() {
+    if (email.isNotEmpty && password.isNotEmpty) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+    } else {
+      setState(() {
+        _isButtonDisabled = true;
+      });
+    }
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -43,6 +56,7 @@ class _LoginState extends State<Login> {
               TextFormField(
                 onChanged: (value) {
                   setState(() => email = value.trim());
+                  _checkInput();
                 },
                 validator: (value) =>
                     value!.isEmpty ? AppStrings.enterAnEmail : null,
@@ -55,6 +69,7 @@ class _LoginState extends State<Login> {
                 obscureText: _obscureText,
                 onChanged: (value) {
                   setState(() => password = value);
+                  _checkInput();
                 },
                 validator: (value) =>
                     value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
@@ -73,7 +88,7 @@ class _LoginState extends State<Login> {
                   ? CircularProgressIndicator()
                   : FilledButton(
                       child: Text(AppStrings.login),
-                      onPressed: () async {
+                      onPressed: _isButtonDisabled ? null : () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() {
                             _isLoading = true;
@@ -95,15 +110,16 @@ class _LoginState extends State<Login> {
                                 .orderByChild("daten/uid")
                                 .equalTo(result.uid)
                                 .once()
-                                .then((DatabaseEvent event) {
+                                .then((DatabaseEvent event) async {
                               DataSnapshot snapshot = event.snapshot;
 
                               if (snapshot.value != null) {
+                                String restaurantId = await _auth.getRestaurantId(result.uid);
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          Dashboard(user: result)),
+                                          Dashboard(user: result, id: restaurantId)),
                                 );
                               } else {
                                 Navigator.pushReplacement(

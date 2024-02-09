@@ -17,8 +17,20 @@ class _RegsiterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-
   bool _obscureText = true;
+  bool _isButtonDisabled = true;
+
+  void _checkInput() {
+    if (email.isNotEmpty && password.isNotEmpty) {
+      setState(() {
+        _isButtonDisabled = false;
+      });
+    } else {
+      setState(() {
+        _isButtonDisabled = true;
+      });
+    }
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -42,6 +54,7 @@ class _RegsiterState extends State<Register> {
               TextFormField(
                 onChanged: (value) {
                   setState(() => email = value.trim());
+                  _checkInput();
                 },
                 validator: (value) => value!.isEmpty ? AppStrings.enterAnEmail : null,
                 decoration: const InputDecoration(
@@ -53,6 +66,7 @@ class _RegsiterState extends State<Register> {
                 obscureText: _obscureText,
                 onChanged: (value) {
                   setState(() => password = value);
+                  _checkInput();
                 },
                 validator: (value) =>
                 value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
@@ -66,10 +80,10 @@ class _RegsiterState extends State<Register> {
                   ),
                 ),
               ),
-              SizedBox(height: 6),
-              ElevatedButton(
+              SizedBox(height: 20),
+              FilledButton(
                 child: const Text(AppStrings.register),
-                onPressed: () async {
+                onPressed: _isButtonDisabled ? null : () async {
                   if (_formKey.currentState!.validate()) {
                     dynamic result = await _auth.registerWithEmailAndPassword(
                         email, password);

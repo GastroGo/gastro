@@ -47,7 +47,7 @@ class AuthService {
     }
   }
 
-  Future createRestaurant(String email, String password, String name,
+  Future<Map<String, dynamic>> createRestaurant(String email, String password, String name,
       String place, String street, int zip, String housenumber) async {
     try {
       // Erstelle einen neuen Benutzer
@@ -55,11 +55,11 @@ class AuthService {
           email: email, password: password);
       User? user = result.user;
 
-      await user?.updateDisplayName('restaurant');
+      await user?.updateDisplayName('restaurant');  // Ändert Display Name zu 'restaurant'
 
       // Erstelle einen neuen Eintrag in der Firebase-Datenbank
       DatabaseReference ref =
-          FirebaseDatabase.instance.ref("Restaurants").push();
+      FirebaseDatabase.instance.ref("Restaurants").push();
       await ref.set({
         'daten': {
           'name': name,
@@ -74,7 +74,7 @@ class AuthService {
         'tische': {}
       });
 
-      return user;
+      return {'user': user, 'restaurantId': ref.key};
     } catch (e) {
       print(e.toString());
       if (e is FirebaseAuthException) {
@@ -84,7 +84,7 @@ class AuthService {
           print('The account already exists for that email.');
         }
       }
-      return null;
+      return {'user': null, 'restaurantId': null};
     }
   }
 
@@ -100,5 +100,24 @@ class AuthService {
     if (user != null) {
       return user.uid;
     }
+  }
+
+  Future<String> getRestaurantId(String uid) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Restaurants");
+    String restaurantId = '';
+
+    try {
+      DatabaseEvent event = await ref.orderByChild("daten/uid").equalTo(uid).once();
+      DataSnapshot snapshot = event.snapshot;
+
+      Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+      values.forEach((key, values) {
+        restaurantId = key;
+      });
+    } catch (error) {
+      print('Error fetching restaurant ID: $error');
+    }
+
+    return restaurantId;
   }
 }

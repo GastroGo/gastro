@@ -20,10 +20,9 @@ class _HomepageState extends State<Homepage> {
   final AuthService _auth = AuthService();
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  final LatLng _center = const LatLng(47.79497954602462, 9.481039555212321);
 
   void _onMapCreated(GoogleMapController controller) {
-    print('Map is created');
     mapController = controller;
   }
 
