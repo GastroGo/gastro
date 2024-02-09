@@ -10,7 +10,7 @@ import '../values/app_strings.dart';
 class Homepage extends StatefulWidget {
   final User user;
 
-  Homepage({required this.user});
+  Homepage({super.key, required this.user});
 
   @override
   _HomepageState createState() => _HomepageState();
