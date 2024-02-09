@@ -1,9 +1,8 @@
-import 'dart:html';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
@@ -21,6 +20,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final AuthService _auth = AuthService();
   late GoogleMapController mapController;
+  LatLng? _currentP = null;
 
   Location _locationController = Location();
 
@@ -28,6 +28,12 @@ class _HomepageState extends State<Homepage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLocationUpdates();
   }
 
   @override
@@ -51,8 +57,9 @@ class _HomepageState extends State<Homepage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: GoogleMap(
+        child: _currentP == null ? const Center(child: Text('Loading...'),): GoogleMap(
           onMapCreated: _onMapCreated,
+          myLocationEnabled: true,
           initialCameraPosition: CameraPosition(
             target: _center,
             zoom: 11.0,
@@ -69,6 +76,24 @@ class _HomepageState extends State<Homepage> {
     _serviceEnabled = await _locationController.serviceEnabled();
     if (_serviceEnabled) {
       _serviceEnabled = await _locationController.requestService();
+    } else {
+      return;
     }
+
+    _permissionGranted = await _locationController.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _locationController.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationController.onLocationChanged.listen((LocationData currentLocation) {
+        if (currentLocation.latitude != null && currentLocation.longitude != null) {
+          setState(() {
+            _currentP = LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          });
+        }
+    });
   }
 }
