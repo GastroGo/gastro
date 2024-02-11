@@ -100,51 +100,6 @@ class _HomepageState extends State<Homepage> {
               markers: Set<Marker>.of(markers), // use the list of markers here
             ),
           ),
-          Positioned(
-            top: 15.0,
-            right: 15.0,
-            left: 15.0,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Enter Restaurant',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      width: 0,
-                      style: BorderStyle.none,
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search, color: Colors.blue),
-                    onPressed: searchAndNavigate,
-                    iconSize: 30.0,
-                  ),
-                ),
-                style: TextStyle(color: Colors.black),
-                onChanged: (val) {
-                  setState(() {
-                    searchAddr = val;
-                  });
-                },
-              ),
-            ),
-          )
         ],
       ),
     );
