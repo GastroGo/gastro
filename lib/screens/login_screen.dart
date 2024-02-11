@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:gastro/screens/dasboard_screen.dart';
 import 'package:gastro/screens/home_screen.dart';
+import 'package:gastro/utils/helpers/snackbar_helper.dart';
 import 'package:gastro/values/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/helpers/navigation_helper.dart';
@@ -43,7 +44,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldMessenger(
+      key: SnackbarHelper.key,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(AppStrings.login),
       ),
@@ -91,13 +94,14 @@ class _LoginState extends State<Login> {
                       onPressed: _isButtonDisabled ? null : () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() {
+                            SnackbarHelper.showSnackBar('Verifying');
                             _isLoading = true;
                           });
                           dynamic result = await _auth
                               .signInWithEmailAndPassword(email, password);
                           if (result == null) {
                             setState(() {
-                              _isLoading = false; // Setzen Sie _isLoading auf false, wenn der Anmeldevorgang abgeschlossen ist
+                              _isLoading = false;
                             });
                             print(AppStrings.couldNot);
                           } else {
@@ -124,12 +128,7 @@ class _LoginState extends State<Login> {
                                           Dashboard(user: result, id: restaurantId)),
                                 );
                               } else {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Homepage(user: result)),
-                                );
+                                NavigationHelper.pushNamed(AppRoutes.home, arguments: result);
                               }
                             });
                           }
@@ -152,6 +151,7 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
+    ),
     );
   }
 }
