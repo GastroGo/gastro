@@ -4,19 +4,22 @@ import 'package:firebase_database/firebase_database.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       User? user = result.user;
+      if (user == null) {
+        throw Exception('Failed to sign in.');
+      }
       return user;
     } catch (e) {
       print(e.toString());
       if (e is FirebaseAuthException) {
         if (e.code == 'user-not-found') {
-          print('No user found for that email.');
+          throw Exception('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          print('The password provided is wrong.');
+          throw Exception('The password provided is wrong.');
         } else if (e.code == 'account-exists-with-different-credential') {
           throw Exception('An account already exists with a different credential.');
         }

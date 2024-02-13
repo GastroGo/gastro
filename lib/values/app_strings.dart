@@ -21,16 +21,18 @@ class AppStrings {
   static const String orLoginWith = 'or Login with';
   static const String couldNot = 'Could not sign in with those credentials';
   static const String logout = 'Logout';
+  static const String verifying = 'Verifying...';
 
   static const String loggedIn = 'Logged In!';
   static const String registrationComplete = 'Registration Complete!';
+  static const String failed = 'Failed to sign in';
 
   static const String email = 'Email';
   static const String enterAnEmail = 'Please, enter an email';
   static const String invalidEmailAddress = 'Invalid Email Address';
 
   static const String password = 'Password';
-  static const String pleaseEnterPassword = 'Please, enter a Password';
+  static const String pleaseEnterPassword = 'Please, enter a valid Password';
   static const String invalidPassword = 'Invalid Password';
 
   static const String name = 'Restaurant Name';

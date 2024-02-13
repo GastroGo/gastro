@@ -63,7 +63,7 @@ class _LoginState extends State<Login> {
                       _checkInput();
                     },
                     validator: (value) =>
-                        value!.isEmpty ? AppStrings.enterAnEmail : null,
+                    value!.isEmpty ? AppStrings.enterAnEmail : null,
                     decoration: const InputDecoration(
                       labelText: AppStrings.email,
                     ),
@@ -94,66 +94,69 @@ class _LoginState extends State<Login> {
                   _isLoading
                       ? const CircularProgressIndicator()
                       : FilledButton(
-                          onPressed: _isButtonDisabled
-                              ? null
-                              : () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    setState(() {
-                                      SnackbarHelper.showSnackBar(
-                                          'Verifying...');
-                                      _isLoading = true;
-                                    });
-                                    dynamic result =
-                                        await _auth.signInWithEmailAndPassword(
-                                            email, password);
-                                    if (result == null) {
-                                      setState(() {
-                                        _isLoading = false;
-                                      });
-                                      print(AppStrings.couldNot);
-                                    } else {
-                                      print(AppStrings.loggedIn);
-                                      print(result);
+                    onPressed: _isButtonDisabled
+                        ? null
+                        : () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          SnackbarHelper.showSnackBar(AppStrings.verifying);
+                          _isLoading = true;
+                        });
+                        try {
+                          dynamic result = await _auth
+                              .signInWithEmailAndPassword(
+                              email, password);
+                          if (result == null) {
+                            throw Exception(AppStrings.failed);
+                          }
+                          print(AppStrings.loggedIn);
+                          print(result);
 
-                                      DatabaseReference ref = FirebaseDatabase
-                                          .instance
-                                          .ref("Restaurants");
-                                      ref
-                                          .orderByChild("daten/uid")
-                                          .equalTo(result.uid)
-                                          .once()
-                                          .then((DatabaseEvent event) async {
-                                        DataSnapshot snapshot = event.snapshot;
+                          DatabaseReference ref = FirebaseDatabase
+                              .instance
+                              .ref("Restaurants");
+                          ref
+                              .orderByChild("daten/uid")
+                              .equalTo(result.uid)
+                              .once()
+                              .then((DatabaseEvent event) async {
+                            DataSnapshot snapshot = event.snapshot;
 
-                                        if (snapshot.value != null) {
-                                          String restaurantId = await _auth
-                                              .getRestaurantId(result.uid);
-                                          SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
-                                          await prefs.setString(
-                                              'restaurantId', restaurantId);
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => Dashboard(
-                                                    user: result,
-                                                    id: restaurantId)),
-                                          );
-                                        } else {
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Homepage(user: result)),
-                                          );
-                                        }
-                                      });
-                                    }
-                                  }
-                                },
-                          child: const Text(AppStrings.login),
-                        ),
+                            if (snapshot.value != null) {
+                              String restaurantId = await _auth
+                                  .getRestaurantId(result.uid);
+                              SharedPreferences prefs =
+                              await SharedPreferences
+                                  .getInstance();
+                              await prefs.setString(
+                                  'restaurantId', restaurantId);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Dashboard(
+                                        user: result,
+                                        id: restaurantId)),
+                              );
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Homepage(user: result)),
+                              );
+                            }
+                          });
+                        } catch (e) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          SnackbarHelper.showSnackBar(e.toString());
+                          return;
+                        }
+                      }
+                    },
+                    child: const Text(AppStrings.login),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: InkWell(
