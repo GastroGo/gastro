@@ -50,14 +50,13 @@ class _CreateRestaurant extends State<CreateRestaurant> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.createRestaurant),
+        title: const Text(AppStrings.createRestaurant),
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            // Add this
             child: Column(
               children: <Widget>[
                 TextFormField(
@@ -67,11 +66,11 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.enterAnEmail : null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: AppStrings.email,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 TextFormField(
                   obscureText: _obscureText,
                   onChanged: (value) {
@@ -90,7 +89,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => name = value);
@@ -98,11 +97,11 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterName : null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: AppStrings.name,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => place = value);
@@ -110,11 +109,11 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterPlace : null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: AppStrings.place,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => street = value);
@@ -122,11 +121,11 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterStreet : null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: AppStrings.street,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => zip = int.parse(value));
@@ -134,11 +133,11 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterZip : null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: AppStrings.zip,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 TextFormField(
                   onChanged: (value) {
                     setState(() => housenumber = value);
@@ -146,13 +145,12 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                   },
                   validator: (value) =>
                       value!.isEmpty ? AppStrings.pleaseEnterHousenumber : null,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: AppStrings.housenumber,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 FilledButton(
-                  child: Text(AppStrings.createRestaurant),
                   onPressed: _isButtonDisabled ? null : () async {
                     if (_formKey.currentState!.validate()) {
                       dynamic result = await _auth.createRestaurant(email,
@@ -173,6 +171,7 @@ class _CreateRestaurant extends State<CreateRestaurant> {
                       }
                     }
                   },
+                  child: const Text(AppStrings.createRestaurant),
                 ),
               ],
             ),

@@ -42,90 +42,97 @@ class _RegsiterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.register),
+        title: const Text(AppStrings.register),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                onChanged: (value) {
-                  setState(() => email = value.trim());
-                  _checkInput();
-                },
-                validator: (value) => value!.isEmpty ? AppStrings.enterAnEmail : null,
-                decoration: const InputDecoration(
-                  labelText: AppStrings.email,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() => email = value.trim());
+                    _checkInput();
+                  },
+                  validator: (value) =>
+                      value!.isEmpty ? AppStrings.enterAnEmail : null,
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.email,
+                  ),
                 ),
-              ),
-              SizedBox(height: 6),
-              TextFormField(
-                obscureText: _obscureText,
-                onChanged: (value) {
-                  setState(() => password = value);
-                  _checkInput();
-                },
-                validator: (value) =>
-                value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
-                decoration: InputDecoration(
-                  labelText: AppStrings.password,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                const SizedBox(height: 6),
+                TextFormField(
+                  obscureText: _obscureText,
+                  onChanged: (value) {
+                    setState(() => password = value);
+                    _checkInput();
+                  },
+                  validator: (value) =>
+                      value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.password,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: _togglePasswordVisibility,
                     ),
-                    onPressed: _togglePasswordVisibility,
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              FilledButton(
-                child: const Text(AppStrings.register),
-                onPressed: _isButtonDisabled ? null : () async {
-                  if (_formKey.currentState!.validate()) {
-                    dynamic result = await _auth.registerWithEmailAndPassword(
-                        email, password);
-                    if (result == null) {
-                      print(AppStrings.couldNot);
-                    } else {
-                      print(AppStrings.registrationComplete);
-                      print(result);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Homepage(user: result)),
-                      );
-                    }
-                  }
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: InkWell(
-                  onTap: () {
-                    NavigationHelper.pop(context);
-                  },
-                  child: Text(
-                    AppStrings.iHaveAnAccount,
-                    style: AppTheme.bodySmall.copyWith(color: Colors.black),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: _isButtonDisabled
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            dynamic result = await _auth
+                                .registerWithEmailAndPassword(email, password);
+                            if (result == null) {
+                              print(AppStrings.couldNot);
+                            } else {
+                              print(AppStrings.registrationComplete);
+                              print(result);
+                              NavigationHelper.pop();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Homepage(user: result)),
+                              );
+                            }
+                          }
+                        },
+                  child: const Text(AppStrings.register),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: InkWell(
+                    onTap: () {
+                      NavigationHelper.pop(context);
+                    },
+                    child: Text(
+                      AppStrings.iHaveAnAccount,
+                      style: AppTheme.bodySmall.copyWith(color: Colors.black),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: InkWell(
-                  onTap: () {
-                    NavigationHelper.pushNamed(AppRoutes.createRestaurant);
-                  },
-                  child: Text(
-                    AppStrings.createRestaurant,
-                    style: AppTheme.bodySmall.copyWith(color: Colors.black),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: InkWell(
+                    onTap: () {
+                      NavigationHelper.pushNamed(AppRoutes.createRestaurant);
+                    },
+                    child: Text(
+                      AppStrings.createRestaurant,
+                      style: AppTheme.bodySmall.copyWith(color: Colors.black),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

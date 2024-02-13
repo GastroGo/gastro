@@ -47,115 +47,131 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
       key: SnackbarHelper.key,
       child: Scaffold(
-      appBar: AppBar(
-        title: Text(AppStrings.login),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                onChanged: (value) {
-                  setState(() => email = value.trim());
-                  _checkInput();
-                },
-                validator: (value) =>
-                    value!.isEmpty ? AppStrings.enterAnEmail : null,
-                decoration: InputDecoration(
-                  labelText: AppStrings.email,
-                ),
-              ),
-              SizedBox(height: 6),
-              TextFormField(
-                obscureText: _obscureText,
-                onChanged: (value) {
-                  setState(() => password = value);
-                  _checkInput();
-                },
-                validator: (value) =>
-                    value!.length < 6 ? AppStrings.pleaseEnterPassword : null,
-                decoration: InputDecoration(
-                  labelText: AppStrings.password,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
+        appBar: AppBar(
+          title: const Text(AppStrings.login),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    onChanged: (value) {
+                      setState(() => email = value.trim());
+                      _checkInput();
+                    },
+                    validator: (value) =>
+                        value!.isEmpty ? AppStrings.enterAnEmail : null,
+                    decoration: const InputDecoration(
+                      labelText: AppStrings.email,
                     ),
-                    onPressed: _togglePasswordVisibility,
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              _isLoading
-                  ? CircularProgressIndicator()
-                  : FilledButton(
-                      child: Text(AppStrings.login),
-                      onPressed: _isButtonDisabled ? null : () async {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            SnackbarHelper.showSnackBar('Verifying...');
-                            _isLoading = true;
-                          });
-                          dynamic result = await _auth
-                              .signInWithEmailAndPassword(email, password);
-                          if (result == null) {
-                            setState(() {
-                              _isLoading = false;
-                            });
-                            print(AppStrings.couldNot);
-                          } else {
-                            print(AppStrings.loggedIn);
-                            print(result);
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    obscureText: _obscureText,
+                    onChanged: (value) {
+                      setState(() => password = value);
+                      _checkInput();
+                    },
+                    validator: (value) => value!.length < 6
+                        ? AppStrings.pleaseEnterPassword
+                        : null,
+                    decoration: InputDecoration(
+                      labelText: AppStrings.password,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: _togglePasswordVisibility,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : FilledButton(
+                          onPressed: _isButtonDisabled
+                              ? null
+                              : () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      SnackbarHelper.showSnackBar(
+                                          'Verifying...');
+                                      _isLoading = true;
+                                    });
+                                    dynamic result =
+                                        await _auth.signInWithEmailAndPassword(
+                                            email, password);
+                                    if (result == null) {
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                      print(AppStrings.couldNot);
+                                    } else {
+                                      print(AppStrings.loggedIn);
+                                      print(result);
 
-                            DatabaseReference ref =
-                                FirebaseDatabase.instance.ref("Restaurants");
-                            ref
-                                .orderByChild("daten/uid")
-                                .equalTo(result.uid)
-                                .once()
-                                .then((DatabaseEvent event) async {
-                              DataSnapshot snapshot = event.snapshot;
+                                      DatabaseReference ref = FirebaseDatabase
+                                          .instance
+                                          .ref("Restaurants");
+                                      ref
+                                          .orderByChild("daten/uid")
+                                          .equalTo(result.uid)
+                                          .once()
+                                          .then((DatabaseEvent event) async {
+                                        DataSnapshot snapshot = event.snapshot;
 
-                              if (snapshot.value != null) {
-                                String restaurantId = await _auth.getRestaurantId(result.uid);
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
-                                await prefs.setString('restaurantId', restaurantId);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Dashboard(user: result, id: restaurantId)),
-                                );
-                              } else {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Homepage(user: result)),
-                                );                              }
-                            });
-                          }
-                        }
+                                        if (snapshot.value != null) {
+                                          String restaurantId = await _auth
+                                              .getRestaurantId(result.uid);
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          await prefs.setString(
+                                              'restaurantId', restaurantId);
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Dashboard(
+                                                    user: result,
+                                                    id: restaurantId)),
+                                          );
+                                        } else {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Homepage(user: result)),
+                                          );
+                                        }
+                                      });
+                                    }
+                                  }
+                                },
+                          child: const Text(AppStrings.login),
+                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: InkWell(
+                      onTap: () {
+                        NavigationHelper.pushNamed(AppRoutes.register);
                       },
+                      child: Text(
+                        AppStrings.doNotHaveAnAccount,
+                        style: AppTheme.bodySmall.copyWith(color: Colors.black),
+                      ),
                     ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: InkWell(
-                  onTap: () {
-                    NavigationHelper.pushNamed(AppRoutes.register);
-                  },
-                  child: Text(
-                    AppStrings.doNotHaveAnAccount,
-                    style: AppTheme.bodySmall.copyWith(color: Colors.black),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }
