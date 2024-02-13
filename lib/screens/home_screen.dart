@@ -127,11 +127,11 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.homepage),
+        title: const Text(AppStrings.homepage),
         actions: <Widget>[
           TextButton.icon(
-            icon: Icon(Icons.person),
-            label: Text(AppStrings.logout),
+            icon: const Icon(Icons.person),
+            label: const Text(AppStrings.logout),
             onPressed: () async {
               await _auth.signOut();
               NavigationHelper.pushReplacementNamed(
@@ -143,7 +143,7 @@ class _HomepageState extends State<Homepage> {
       ),
       body: Stack(
         children: <Widget>[
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: _currentP == null ? const Center(child: Text('Loading...'),): GoogleMap(
