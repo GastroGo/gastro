@@ -31,7 +31,7 @@ class AuthService {
           email: email, password: password);
       User? user = result.user;
 
-      await user?.updateDisplayName('user');
+      await user?.updateDisplayName('user');  // Ändert Display Name zu 'user'
 
       return user;
     } catch (e) {
