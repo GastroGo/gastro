@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gastro/firebase/AuthService.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/helpers/navigation_helper.dart';
 import '../values/app_routes.dart';
 import '../values/app_strings.dart';
@@ -28,9 +30,63 @@ class _HomepageState extends State<Homepage> {
   List<Marker> markers = [];
   String searchAddr = '';
 
+  void loadMarkersFromPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? addresses = prefs.getStringList('addresses');
+    List<String>? names = prefs.getStringList('names');
+
+    if (addresses != null && names != null) {
+      for (int i = 0; i < addresses.length; i++) {
+        LatLng latLng = await getLatLng(addresses[i]);
+        markers.add(Marker(
+          markerId: MarkerId(addresses[i]),
+          position: latLng,
+          infoWindow: InfoWindow(title: names[i]),
+        ));
+      }
+      checkForUpdates();
+    } else {
+      populateMarkers();
+    }
+  }
+
+  void checkForUpdates() async {
+    List<String> latestAddresses = await getAddresses();
+    List<String> latestNames = await getNames();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? storedAddresses = prefs.getStringList('addresses');
+    List<String>? storedNames = prefs.getStringList('names');
+
+    if (storedAddresses != null && storedNames != null) {
+      if (!listEquals(latestAddresses, storedAddresses) || !listEquals(latestNames, storedNames)) {
+        prefs.setStringList('addresses', latestAddresses);
+        prefs.setStringList('names', latestNames);
+        updateMarkers(latestAddresses, latestNames);
+      }
+    }
+  }
+
+  void updateMarkers(List<String> addresses, List<String> names) async {
+    markers.clear();
+    for (int i = 0; i < addresses.length; i++) {
+      LatLng latLng = await getLatLng(addresses[i]);
+      markers.add(Marker(
+        markerId: MarkerId(addresses[i]),
+        position: latLng,
+        infoWindow: InfoWindow(title: names[i]),
+      ));
+    }
+    setState(() {}); // Refresh the map
+  }
+
   void populateMarkers() async {
     List<String> addresses = await getAddresses();
     List<String> names = await getNames();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('addresses', addresses);
+    prefs.setStringList('names', names);
+
     for (int i = 0; i < addresses.length; i++) {
       LatLng latLng = await getLatLng(addresses[i]);
       markers.add(Marker(
@@ -59,7 +115,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    populateMarkers();
+    loadMarkersFromPreferences();
     getLocationUpdates();
   }
 
