@@ -14,7 +14,7 @@ class Dashboard extends StatefulWidget {
   final User user;
   final String id;
 
-  Dashboard({required this.user, required this.id});
+  const Dashboard({super.key, required this.user, required this.id});
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -60,7 +60,7 @@ class _DashboardState extends State<Dashboard> {
       future: Future.delayed(Duration.zero),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (restaurantId == null) {
-          return CircularProgressIndicator(); // Show a loading spinner while waiting
+          return const CircularProgressIndicator(); // Show a loading spinner while waiting
         } else {
           return Scaffold(
             appBar: AppBar(

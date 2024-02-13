@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                       onPressed: _isButtonDisabled ? null : () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() {
-                            SnackbarHelper.showSnackBar('Verifying');
+                            SnackbarHelper.showSnackBar('Verifying...');
                             _isLoading = true;
                           });
                           dynamic result = await _auth
@@ -128,8 +128,12 @@ class _LoginState extends State<Login> {
                                           Dashboard(user: result, id: restaurantId)),
                                 );
                               } else {
-                                NavigationHelper.pushNamed(AppRoutes.home, arguments: result);
-                              }
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Homepage(user: result)),
+                                );                              }
                             });
                           }
                         }
