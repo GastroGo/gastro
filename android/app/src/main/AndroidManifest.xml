@@ -4,7 +4,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="gastro">
+        android:label="Gastro Go!">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA22rUkrcarmOYWGyTu789MqTRmXoEFPbs"/>
         <activity
