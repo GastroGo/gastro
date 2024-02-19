@@ -77,7 +77,7 @@ class _HomepageState extends State<Homepage> {
         infoWindow: InfoWindow(title: names[i]),
       ));
     }
-    setState(() {}); // Refresh the map
+    setState(() {}); // Refreshing the map
   }
 
   void populateMarkers() async {
@@ -153,7 +153,7 @@ class _HomepageState extends State<Homepage> {
                 target: _center,
                 zoom: 11.0,
               ),
-              markers: Set<Marker>.of(markers), // use the list of markers here
+              markers: Set<Marker>.of(markers),
             ),
           ),
         ],
