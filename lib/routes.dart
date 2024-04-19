@@ -38,7 +38,7 @@ class Routes {
 
       case AppRoutes.dashboard:
         return getRoute(
-            widget: Dashboard(user: FirebaseAuth.instance.currentUser!));
+            widget: Dashboard(user: FirebaseAuth.instance.currentUser!, id: ''));
 
       /// An invalid route. User shouldn't see this,
       /// it's for debugging purpose only.
