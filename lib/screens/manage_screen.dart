@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../values/app_theme.dart';
 
 class ManageScreen extends StatelessWidget {
+  const ManageScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(
