@@ -53,4 +53,10 @@ class AppStrings {
   static const String confirmPassword = 'Confirm Password';
   static const String pleaseReEnterPassword = 'Please, Re-Enter Password';
   static const String passwordNotMatched = 'Password not matched!';
+
+
+  static const String menu = 'Menu';
+  static const String tables = 'Tables';
+  static const String employees = 'Employees';
+  static const String qrcodes = 'QR Codes';
 }

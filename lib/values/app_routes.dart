@@ -6,4 +6,8 @@ class AppRoutes {
   static const String createRestaurant = 'createRestaurant';
   static const String home = 'home';
   static const String dashboard = 'dashboard';
+  static const String menu = 'menu';
+  static const String tables = 'tables';
+  static const String employees = 'employees';
+  static const String qrcodes = 'qrcodes';
 }

@@ -2,9 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gastro/screens/create_restaurant_screen.dart';
 import 'package:gastro/screens/dasboard_screen.dart';
+import 'package:gastro/screens/employees_screen.dart';
 import 'package:gastro/screens/home_screen.dart';
 import 'package:gastro/screens/login_screen.dart';
+import 'package:gastro/screens/menu_screen.dart';
+import 'package:gastro/screens/qrcodes_screen.dart';
 import 'package:gastro/screens/register_screen.dart';
+import 'package:gastro/screens/tables_screen.dart';
 import 'package:gastro/values/app_routes.dart';
 
 class Routes {
@@ -39,6 +43,18 @@ class Routes {
       case AppRoutes.dashboard:
         return getRoute(
             widget: Dashboard(user: FirebaseAuth.instance.currentUser!, id: ''));
+
+      case AppRoutes.menu:
+        return getRoute(widget: MenuScreen());
+
+      case AppRoutes.tables:
+        return getRoute(widget: TablesScreen());
+
+      case AppRoutes.employees:
+        return getRoute(widget: EmployeesScreen());
+
+      case AppRoutes.qrcodes:
+        return getRoute(widget: QRCodesScreen());
 
       /// An invalid route. User shouldn't see this,
       /// it's for debugging purpose only.
