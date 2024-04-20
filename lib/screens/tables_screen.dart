@@ -1,11 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:gastro/values/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/helpers/navigation_helper.dart';
 import '../utils/helpers/snackbar_helper.dart';
 import '../values/app_strings.dart';
-import 'package:firebase_database/firebase_database.dart';
-
 
 class TablesScreen extends StatefulWidget {
   @override
@@ -13,14 +15,22 @@ class TablesScreen extends StatefulWidget {
 }
 
 class _TablesScreenState extends State<TablesScreen> {
-  List<String> tableNum = [];
+  Map<String, String> tableNumAndTimer = {};
   String? restaurantId;
   DatabaseReference? ref;
+
+  Timer? timer;
+  DateTime currentTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     loadRestaurantId();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        currentTime = DateTime.now();
+      });
+    });
   }
 
   Future<void> loadRestaurantId() async {
@@ -38,18 +48,18 @@ class _TablesScreenState extends State<TablesScreen> {
         var snapshot = event.snapshot;
         var values = snapshot.value as Map<dynamic, dynamic>;
 
-        // Print the names of the child nodes
-        values.forEach((key, value) {
-          print('Child node name: $key');
-        });
-
         // Sort the entries based on the keys
         var entries = values.entries.toList()
           ..sort((a, b) => a.key.compareTo(b.key));
 
-        // Convert the sorted entries to a list of strings
+        // Convert the sorted entries to a map of table numbers and last orders
         setState(() {
-          tableNum = entries.map((entry) => entry.key.toString()).toList();
+          tableNumAndTimer = Map.fromEntries(entries.map((entry) {
+            String tableNum =
+                int.parse(entry.key.toString().substring(1)).toString();
+            String lastOrder = entry.value['letzteBestellung'];
+            return MapEntry(tableNum, lastOrder);
+          }));
         });
       } catch (e) {
         print('Error in setupFirebase: $e');
@@ -59,9 +69,7 @@ class _TablesScreenState extends State<TablesScreen> {
 
   @override
   void dispose() {
-    if (ref != null) {
-      ref!.onValue.listen((_) {}).cancel(); // Cancel the subscription when the widget is disposed
-    }
+    timer?.cancel();
     super.dispose();
   }
 
@@ -73,12 +81,130 @@ class _TablesScreenState extends State<TablesScreen> {
         appBar: AppBar(
           title: const Text(AppStrings.tables),
         ),
-        body: ListView(
-          children: tableNum.map((item) => ListTile(
-            title: Text(item),
-          )).toList(),
+        body: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: _sortByTableNum,
+                  child: Text('Sort by Table Number'),
+                ),
+                ElevatedButton(
+                  onPressed: _sortByElapsedTime,
+                  child: Text('Sort by Elapsed Time'),
+                ),
+              ],
+            ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                // This specifies the number of columns
+                childAspectRatio: 3 / 2,
+                // Adjust this value to change the aspect ratio of the grid items
+                children: tableNumAndTimer.keys
+                    .map((item) => _buildSquareButton(item))
+                    .toList(),
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void _sortByTableNum() {
+    setState(() {
+      var entries = tableNumAndTimer.entries.toList();
+
+      // Sort the entries based on the table number
+      entries.sort((a, b) => a.key.compareTo(b.key));
+
+      // Convert the sorted entries back to a map
+      tableNumAndTimer = Map.fromEntries(entries);
+    });
+  }
+
+  void _sortByElapsedTime() {
+    setState(() {
+      tableNumAndTimer = _getSortedTableNumAndTimer();
+    });
+  }
+
+  Widget _buildSquareButton(String item) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.amber, // Change this to your desired color
+        borderRadius: BorderRadius.circular(10), // Adjust for desired roundness
+      ),
+      margin: EdgeInsets.all(8.0),
+      child: ListTile(
+        title: Text("Table " + item,
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(getElapsedTime(item)),
+        onTap: () {
+          // Handle your onTap action here
+          print('Tapped on Table ' + item);
+          NavigationHelper.pushNamed(AppRoutes.dashboard);
+        },
+      ),
+    );
+  }
+
+  String getElapsedTime(String tableNum) {
+    String lastOrder = tableNumAndTimer[tableNum] ?? '00:00';
+
+    if(lastOrder != "-"){
+      // Parse the lastOrder string into a DateTime object
+      List<String> parts = lastOrder.split(':');
+      DateTime lastOrderTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, int.parse(parts[0]), int.parse(parts[1]));
+
+      // Calculate the elapsed time
+      Duration elapsedTime = currentTime.difference(lastOrderTime);
+
+      // Format the elapsed time into a string in the format 'mm:ss'
+      String elapsedTimeStr =
+          '${elapsedTime.inMinutes.toString().padLeft(2, '0')}:${(elapsedTime.inSeconds % 60).toString().padLeft(2, '0')}';
+
+      return elapsedTimeStr;
+    }else{
+      return "-";
+    }
+
+  }
+
+  Map<String, String> _getSortedTableNumAndTimer() {
+    var entries = tableNumAndTimer.entries.toList();
+
+    // Sort the entries based on the elapsed time in descending order
+    entries.sort((a, b) {
+      if (a.value == "-") return 1;
+      if (b.value == "-") return -1;
+
+      Duration elapsedTimeA = _getDuration(a.key);
+      Duration elapsedTimeB = _getDuration(b.key);
+      return elapsedTimeB.compareTo(elapsedTimeA); // Reverse the comparison here
+    });
+
+    // Convert the sorted entries back to a map
+    return Map.fromEntries(entries);
+  }
+
+  Duration _getDuration(String tableNum) {
+    String lastOrder = tableNumAndTimer[tableNum] ?? '00:00';
+
+    if (lastOrder == "-") {
+      // Return a large duration for tables that have not yet been ordered
+      return Duration(days: 9999);
+    }
+
+    // Parse the lastOrder string into a DateTime object
+    List<String> parts = lastOrder.split(':');
+    DateTime lastOrderTime = DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day, int.parse(parts[0]), int.parse(parts[1]));
+
+    // Calculate the elapsed time
+    return currentTime.difference(lastOrderTime);
   }
 }
