@@ -13,7 +13,7 @@ class TablesScreen extends StatefulWidget {
 }
 
 class _TablesScreenState extends State<TablesScreen> {
-  List<String> data = [];
+  List<String> tableNum = [];
   String? restaurantId;
   DatabaseReference? ref;
 
@@ -32,11 +32,16 @@ class _TablesScreenState extends State<TablesScreen> {
   }
 
   void setupFirebase() {
-    ref = FirebaseDatabase.instance.ref('Restaurants/$restaurantId/tische/T001/bestellungen');
+    ref = FirebaseDatabase.instance.ref('Restaurants/$restaurantId/tische');
     ref!.onValue.listen((event) {
       try {
         var snapshot = event.snapshot;
         var values = snapshot.value as Map<dynamic, dynamic>;
+
+        // Print the names of the child nodes
+        values.forEach((key, value) {
+          print('Child node name: $key');
+        });
 
         // Sort the entries based on the keys
         var entries = values.entries.toList()
@@ -44,7 +49,7 @@ class _TablesScreenState extends State<TablesScreen> {
 
         // Convert the sorted entries to a list of strings
         setState(() {
-          data = entries.map((entry) => entry.value.toString()).toList();
+          tableNum = entries.map((entry) => entry.key.toString()).toList();
         });
       } catch (e) {
         print('Error in setupFirebase: $e');
@@ -69,7 +74,7 @@ class _TablesScreenState extends State<TablesScreen> {
           title: const Text(AppStrings.tables),
         ),
         body: ListView(
-          children: data.map((item) => ListTile(
+          children: tableNum.map((item) => ListTile(
             title: Text(item),
           )).toList(),
         ),
