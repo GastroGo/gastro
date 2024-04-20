@@ -59,4 +59,8 @@ class AppStrings {
   static const String tables = 'Tables';
   static const String employees = 'Employees';
   static const String qrcodes = 'QR Codes';
+
+
+  static const String orders = 'Orders';
+  static const String table = 'Table';
 }

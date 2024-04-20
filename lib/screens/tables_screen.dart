@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/helpers/navigation_helper.dart';
 import '../utils/helpers/snackbar_helper.dart';
 import '../values/app_strings.dart';
+import 'orders_screen.dart';
 
 class TablesScreen extends StatefulWidget {
   @override
@@ -75,40 +76,35 @@ class _TablesScreenState extends State<TablesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-      key: SnackbarHelper.key,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(AppStrings.tables),
-        ),
-        body: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: _sortByTableNum,
-                  child: Text('Sort by Table Number'),
-                ),
-                ElevatedButton(
-                  onPressed: _sortByElapsedTime,
-                  child: Text('Sort by Elapsed Time'),
-                ),
-              ],
-            ),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                // This specifies the number of columns
-                childAspectRatio: 3 / 2,
-                // Adjust this value to change the aspect ratio of the grid items
-                children: tableNumAndTimer.keys
-                    .map((item) => _buildSquareButton(item))
-                    .toList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppStrings.tables),
+      ),
+      body: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: _sortByTableNum,
+                child: Text('Sort by Table Number'),
               ),
+              ElevatedButton(
+                onPressed: _sortByElapsedTime,
+                child: Text('Sort by Elapsed Time'),
+              ),
+            ],
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 3 / 2,
+              children: tableNumAndTimer.keys
+                  .map((item) => _buildSquareButton(item))
+                  .toList(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -139,13 +135,15 @@ class _TablesScreenState extends State<TablesScreen> {
       ),
       margin: EdgeInsets.all(8.0),
       child: ListTile(
-        title: Text("Table " + item,
+        title: Text(AppStrings.table + " " + item,
             style: TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(getElapsedTime(item)),
         onTap: () {
           // Handle your onTap action here
-          print('Tapped on Table ' + item);
-          NavigationHelper.pushNamed(AppRoutes.dashboard);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => OrderScreen(tableNum: item)),
+          );
         },
       ),
     );
