@@ -98,7 +98,7 @@ class _TablesScreenState extends State<TablesScreen> {
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
-              childAspectRatio: 3 / 2,
+              childAspectRatio: 10 / 4,
               children: tableNumAndTimer.keys
                   .map((item) => _buildSquareButton(item))
                   .toList(),
