@@ -63,4 +63,5 @@ class AppStrings {
 
   static const String orders = 'Orders';
   static const String table = 'Table';
+  static const String bill = 'Bill';
 }

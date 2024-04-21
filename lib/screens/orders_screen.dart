@@ -67,8 +67,8 @@ class _OrderScreenState extends State<OrderScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              _buildButton('Open Orders', States.open),
-              _buildButton('Closed Orders', States.closed),
+              _buildOpenClosedButton('Open Orders', States.open),
+              _buildOpenClosedButton('Closed Orders', States.closed),
             ],
           ),
           Expanded(
@@ -76,15 +76,46 @@ class _OrderScreenState extends State<OrderScreen> {
               crossAxisCount: 1,
               childAspectRatio: 8 / 2,
               children:
-                  orders.keys.map((item) => _buildSquareButton(item)).toList(),
+                  orders.keys.map((item) => _buildDish(item)).toList(),
             ),
           ),
+          _buildButton(AppStrings.bill, Icons.account_balance_rounded, billButtonCallback),
+          _buildButton("Add Order", Icons.add_box, addOrderButtonCallback)
         ],
       ),
     );
   }
 
-  Widget _buildButton(String title, States state) {
+
+
+  Widget _buildButton(String buttonText, IconData buttonIcon, callback){
+    return Card(
+        color: Colors.amber,
+        margin: EdgeInsets.all(8.0),
+        child: InkWell(
+          onTap: (){
+            callback();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0), // Adjust the padding as needed
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(buttonIcon, size: 30, color: Colors.black87),
+                  Text(
+                    " " + buttonText,
+                    style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 30),
+                  )
+                ],
+              ),
+            ),
+          ),
+        )
+    );
+  }
+
+  Widget _buildOpenClosedButton(String title, States state) {
     return ElevatedButton(
       onPressed: () {
         setState(() {
@@ -100,7 +131,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget _buildSquareButton(String item) {
+  Widget _buildDish(String item) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -256,6 +287,16 @@ class _OrderScreenState extends State<OrderScreen> {
         dishNames[entry.key.toString()] = dishName;
       });
     }
+  }
+
+  //other Functions
+
+  void billButtonCallback(){
+    print("Bill");
+  }
+
+  void addOrderButtonCallback(){
+    print("Add Order");
   }
 
 
