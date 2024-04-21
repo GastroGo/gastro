@@ -55,7 +55,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.table + " 1"),
+        title: Text(AppStrings.table + " " + widget.tableNum),
       ),
       body: Column(
         children: <Widget>[
@@ -66,17 +66,25 @@ class _OrderScreenState extends State<OrderScreen> {
                 onPressed: () {
                   setState(() {
                     curState = States.OPEN;
+                    updateData();
                   });
                 },
                 child: Text('Open Orders'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(curState == States.OPEN ? Colors.amber : Colors.grey), // Change the color here
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
                     curState = States.CLOSED;
+                    updateData();
                   });
                 },
                 child: Text('Closed Orders'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(curState == States.CLOSED ? Colors.amber : Colors.grey), // Change the color here
+                ),
               ),
             ],
           ),
@@ -147,6 +155,43 @@ class _OrderScreenState extends State<OrderScreen> {
         print('Error in setupFirebase: $e');
       }
     });
+  }
+
+  void updateData() async{
+    String formattedTableNum = 'T' + widget.tableNum.padLeft(3, '0');
+    if (curState == States.OPEN){
+      ref = FirebaseDatabase.instance.ref('Restaurants/$restaurantId/tische/$formattedTableNum/bestellungen');
+    } else {
+      ref = FirebaseDatabase.instance.ref('Restaurants/$restaurantId/tische/$formattedTableNum/geschlosseneBestellungen');
+    }
+
+    final snapshot = await ref?.get();
+
+    if (snapshot?.value != null) {
+      if (snapshot?.value is Map<dynamic, dynamic>) {
+        Map<dynamic, dynamic> values = snapshot?.value as Map<dynamic, dynamic>;
+
+        // Convert the Map<dynamic, dynamic> to Map<String, String>
+        Map<String, String> stringMap = values.map((key, value) => MapEntry(key.toString(), value.toString()));
+
+        // Filter out entries with 0 orders
+        stringMap.removeWhere((key, value) => value == '0');
+
+        // Sort the entries based on the keys
+        var entries = stringMap.entries.toList()
+          ..sort((a, b) => a.key.compareTo(b.key));
+
+        // Convert the sorted entries back to a map and assign it to orders
+        setState(() {
+          orders = Map.fromEntries(entries);
+        });
+      } else {
+        print('Unexpected data type: ${snapshot?.value.runtimeType}');
+      }
+    } else {
+      print('No data found at the specified location');
+    }
+
   }
 
 
