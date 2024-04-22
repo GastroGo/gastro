@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _OrderScreenState extends State<OrderScreen> {
   String? restaurantId;
   DatabaseReference? ref;
   StreamSubscription<DatabaseEvent>? _subscription;
+  var prefs;
 
 
   //Overrides
@@ -43,6 +45,12 @@ class _OrderScreenState extends State<OrderScreen> {
   //Setup
   Future<void> setupAsync() async {
     await loadRestaurantId();
+    prefs = await SharedPreferences.getInstance();
+    try{
+      getDishNames();
+    } catch(e){
+      print(e);
+    }
     loadDishNames();
   }
 
@@ -52,6 +60,11 @@ class _OrderScreenState extends State<OrderScreen> {
     if (restaurantId != null && restaurantId!.isNotEmpty) {
       setupFirebase();
     }
+  }
+
+  void getDishNames(){
+    String mapString = prefs.getString('dishNames');
+    dishNames = jsonDecode(mapString).cast<String, String>();
   }
 
 
@@ -91,7 +104,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget _buildButton(String buttonText, IconData buttonIcon, callback){
     return Card(
         color: Colors.amber,
-        margin: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
         child: InkWell(
           onTap: (){
             callback();
@@ -234,7 +247,7 @@ class _OrderScreenState extends State<OrderScreen> {
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
     if (curState == States.open) {
 
-      final snapshot = await ref?.child("geschlosseneBestellungen").get();
+      final snapshot = await ref.child("geschlosseneBestellungen").get();
       Map<String, String> closedOrders = getData(snapshot);
 
       await ref.update({
@@ -243,7 +256,7 @@ class _OrderScreenState extends State<OrderScreen> {
       });
     } else {
 
-      final snapshot = await ref?.child("bestellungen").get();
+      final snapshot = await ref.child("bestellungen").get();
       Map<String, String> openOrders = getData(snapshot);
 
       await ref.update({
@@ -273,6 +286,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   void loadDishNames() async {
+
     final ref = FirebaseDatabase.instance.ref();
     final snapshot =
         await ref.child('Restaurants/$restaurantId/speisekarte').get();
@@ -287,6 +301,10 @@ class _OrderScreenState extends State<OrderScreen> {
         dishNames[entry.key.toString()] = dishName;
       });
     }
+
+    String mapString = jsonEncode(dishNames);
+    prefs.setString('dishNames', mapString);
+
   }
 
   //other Functions
