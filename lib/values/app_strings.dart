@@ -64,4 +64,7 @@ class AppStrings {
   static const String orders = 'Orders';
   static const String table = 'Table';
   static const String bill = 'Bill';
+  static const String sortByTableNumber = 'Sort by Table Number';
+  static const String sortByElapsedTime = 'Sort by Elapsed Time';
+
 }

@@ -27,7 +27,7 @@ class _TablesScreenState extends State<TablesScreen> {
   void initState() {
     super.initState();
     loadRestaurantId();
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       setState(() {
         currentTime = DateTime.now();
       });
@@ -87,11 +87,11 @@ class _TablesScreenState extends State<TablesScreen> {
             children: <Widget>[
               ElevatedButton(
                 onPressed: _sortByTableNum,
-                child: Text('Sort by Table Number'),
+                child: const Text(AppStrings.sortByTableNumber),
               ),
               ElevatedButton(
                 onPressed: _sortByElapsedTime,
-                child: Text('Sort by Elapsed Time'),
+                child: const Text(AppStrings.sortByElapsedTime),
               ),
             ],
           ),
@@ -133,10 +133,10 @@ class _TablesScreenState extends State<TablesScreen> {
         color: Colors.amber, // Change this to your desired color
         borderRadius: BorderRadius.circular(10), // Adjust for desired roundness
       ),
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: ListTile(
-        title: Text(AppStrings.table + " " + item,
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("${AppStrings.table} $item",
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(getElapsedTime(item)),
         onTap: () {
           // Handle your onTap action here
@@ -194,7 +194,7 @@ class _TablesScreenState extends State<TablesScreen> {
 
     if (lastOrder == "-") {
       // Return a large duration for tables that have not yet been ordered
-      return Duration(days: 9999);
+      return const Duration(days: 9999);
     }
 
     // Parse the lastOrder string into a DateTime object
