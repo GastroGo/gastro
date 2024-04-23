@@ -181,11 +181,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           padding: const EdgeInsets.all(10.0),
                           child: TextButton(
                             onPressed: () => setState(() {
-                              if (curState == States.closed) {
-                                // Do nothing when the state is closed
-                              } else {
                                 closeOpenOrder(item);
-                              }
                             }),
                             style: ButtonStyle(
                               backgroundColor:
@@ -261,6 +257,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Future<void> closeOpenOrder(var dish) async {
+    print("closeOpenOrder function called with dish: $dish");
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
     DatabaseReference ref = FirebaseDatabase.instance
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
