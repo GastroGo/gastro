@@ -278,9 +278,8 @@ class _OrderScreenState extends State<OrderScreen> {
         Map<String, String> closedOrders = getData(snapshotClosed);
 
         await ref.update({
-          "bestellungen/$dish": int.parse(openOrders[dish] ?? '0') +
-              int.parse(closedOrders[dish] ?? '0'),
-          "geschlosseneBestellungen/$dish": null // remove the dish from closed orders
+          "bestellungen/$dish": int.parse(closedOrders[dish] ?? '0'), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
+          "geschlosseneBestellungen/$dish": 0 // change the value of the dish in closed orders to 0 instead of removing it
         });
         break;
     }
