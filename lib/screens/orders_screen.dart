@@ -181,20 +181,20 @@ class _OrderScreenState extends State<OrderScreen> {
                           padding: const EdgeInsets.all(10.0),
                           child: TextButton(
                             onPressed: () => setState(() {
-                                closeOpenOrder(item);
+                              closeOpenOrder(item);
                             }),
                             style: ButtonStyle(
                               backgroundColor:
-                              MaterialStateProperty.all<Color?>(
-                                  curState == States.open
-                                      ? Colors.amber
-                                      : Colors.amber),
+                                  MaterialStateProperty.all<Color?>(
+                                      curState == States.open
+                                          ? Colors.amber
+                                          : Colors.amber),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
                                 curState == States.closed ||
-                                    closingDishes.contains(item)
+                                        closingDishes.contains(item)
                                     ? "Reopen Order"
                                     : "Close Order",
                                 style: const TextStyle(color: Colors.black),
@@ -274,12 +274,16 @@ class _OrderScreenState extends State<OrderScreen> {
         final snapshotOpen = await ref.child("bestellungen").get();
         Map<String, String> openOrders = getData(snapshotOpen);
 
-        final snapshotClosed = await ref.child("geschlosseneBestellungen").get();
+        final snapshotClosed =
+            await ref.child("geschlosseneBestellungen").get();
         Map<String, String> closedOrders = getData(snapshotClosed);
 
         await ref.update({
-          "bestellungen/$dish": int.parse(closedOrders[dish] ?? '0'), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
-          "geschlosseneBestellungen/$dish": 0 // change the value of the dish in closed orders to 0 instead of removing it
+          "bestellungen/$dish": int.parse(orders[dish] ?? '0') +
+              int.parse(openOrders[
+                  dish]!), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
+          "geschlosseneBestellungen/$dish":
+              0 // change the value of the dish in closed orders to 0 instead of removing it
         });
         break;
     }
