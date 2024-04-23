@@ -83,13 +83,15 @@ class _TablesScreenState extends State<TablesScreen> {
       body: Column(
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _buildSortButtons(AppStrings.sortByTableNumber, _sortByTableNum),
+              SizedBox(width: 20), // Add this
               _buildSortButtons(
                   AppStrings.sortByElapsedTime, _sortByElapsedTime),
             ],
           ),
+          SizedBox(height: 10), // Add this
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
@@ -146,8 +148,8 @@ class _TablesScreenState extends State<TablesScreen> {
   Widget _buildSquareButton(String item) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.amber, // Change this to your desired color
-        borderRadius: BorderRadius.circular(10), // Adjust for desired roundness
+        color: Colors.amber,
+        borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
@@ -155,7 +157,6 @@ class _TablesScreenState extends State<TablesScreen> {
             style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(getElapsedTime(item)),
         onTap: () {
-          // Handle your onTap action here
           Navigator.push(
             context,
             MaterialPageRoute(

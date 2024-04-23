@@ -76,12 +76,16 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _buildOpenClosedButton('Open Orders', States.open),
-              _buildOpenClosedButton('Closed Orders', States.closed),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 0.0), // Increase the padding as needed
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _buildOpenClosedButton('Open Orders', States.open),
+                _buildOpenClosedButton('Closed Orders', States.closed),
+              ],
+            ),
           ),
           Expanded(
             child: GridView.count(
