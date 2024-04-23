@@ -286,7 +286,7 @@ Future<void> closeOpenOrder(var dish) async {
         try {
           await ref.update({
             "bestellungen/$dish": int.parse(closedOrders[dish]!), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
-            "geschlosseneBestellungen/$dish": null // remove the dish from closed orders
+            "geschlosseneBestellungen/$dish": 0 // remove the dish from closed orders
           });
           print("After Firebase update operation");
         } catch (e) {
