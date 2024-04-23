@@ -181,20 +181,20 @@ class _OrderScreenState extends State<OrderScreen> {
                           padding: const EdgeInsets.all(10.0),
                           child: TextButton(
                             onPressed: () => setState(() {
-                                closeOpenOrder(item);
+                              closeOpenOrder(item);
                             }),
                             style: ButtonStyle(
                               backgroundColor:
-                              MaterialStateProperty.all<Color?>(
-                                  curState == States.open
-                                      ? Colors.amber
-                                      : Colors.amber),
+                                  MaterialStateProperty.all<Color?>(
+                                      curState == States.open
+                                          ? Colors.amber
+                                          : Colors.amber),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
                                 curState == States.closed ||
-                                    closingDishes.contains(item)
+                                        closingDishes.contains(item)
                                     ? "Reopen Order"
                                     : "Close Order",
                                 style: const TextStyle(color: Colors.black),
@@ -256,48 +256,52 @@ class _OrderScreenState extends State<OrderScreen> {
     return {};
   }
 
-Future<void> closeOpenOrder(var dish) async {
-  print("closeOpenOrder function called with dish: $dish");
-  print("Type of dish: ${dish.runtimeType}"); // Print the data type of dish
-  String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
-  DatabaseReference ref = FirebaseDatabase.instance
-      .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
+  Future<void> closeOpenOrder(var dish) async {
+    print("closeOpenOrder function called with dish: $dish");
+    print("Type of dish: ${dish.runtimeType}"); // Print the data type of dish
+    String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
-  switch (curState) {
-    case States.open:
-      if (closingDishes.contains(dish)) {
-        closingDishes.remove(dish);
-      } else {
-        closingDishes.add(dish);
-      }
-      break;
-    case States.closed:
-      final snapshotOpen = await ref.child("bestellungen").get();
-      Map<String, String> openOrders = getData(snapshotOpen);
-
-      final snapshotClosed = await ref.child("geschlosseneBestellungen").get();
-      Map<String, String> closedOrders = getData(snapshotClosed);
-
-      print("Contents of closedOrders: $closedOrders"); // Print the contents of closedOrders
-
-      if (closedOrders.containsKey(dish)) {
-        print("Dish exists in closedOrders");
-        print("Before Firebase update operation");
-        try {
-          await ref.update({
-            "bestellungen/$dish": int.parse(closedOrders[dish]!), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
-            "geschlosseneBestellungen/$dish": 0 // remove the dish from closed orders
-          });
-          print("After Firebase update operation");
-        } catch (e) {
-          print("Error during Firebase update operation: $e");
+    switch (curState) {
+      case States.open:
+        if (closingDishes.contains(dish)) {
+          closingDishes.remove(dish);
+        } else {
+          closingDishes.add(dish);
         }
-      } else {
-        print("Dish does not exist in closedOrders");
-      }
-      break;
+        break;
+      case States.closed:
+        final snapshotOpen = await ref.child("bestellungen").get();
+        Map<String, String> openOrders = getData(snapshotOpen);
+
+        final snapshotClosed =
+            await ref.child("geschlosseneBestellungen").get();
+        Map<String, String> closedOrders = getData(snapshotClosed);
+
+        print(
+            "Contents of closedOrders: $closedOrders"); // Print the contents of closedOrders
+
+        if (closedOrders.containsKey(dish)) {
+          print("Dish exists in closedOrders");
+          print("Before Firebase update operation");
+          try {
+            await ref.update({
+              "bestellungen/$dish": int.parse(closedOrders[
+                  dish]!), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
+              "geschlosseneBestellungen/$dish":
+                  0 // remove the dish from closed orders
+            });
+            print("After Firebase update operation");
+          } catch (e) {
+            print("Error during Firebase update operation: $e");
+          }
+        } else {
+          print("Dish does not exist in closedOrders");
+        }
+        break;
+    }
   }
-}
 
   Future<void> closeOrderEnd() async {
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
