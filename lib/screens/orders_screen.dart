@@ -181,21 +181,25 @@ class _OrderScreenState extends State<OrderScreen> {
                           padding: const EdgeInsets.all(10.0),
                           child: TextButton(
                             onPressed: () => setState(() {
-                              closeOpenOrder(item);
+                              if (curState == States.closed) {
+                                // Do nothing when the state is closed
+                              } else {
+                                closeOpenOrder(item);
+                              }
                             }),
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color?>(
-                                      curState == States.open
-                                          ? Colors.amber
-                                          : Colors.amber),
+                              MaterialStateProperty.all<Color?>(
+                                  curState == States.open
+                                      ? Colors.amber
+                                      : Colors.amber),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
                                 curState == States.closed ||
-                                        closingDishes.contains(item)
-                                    ? "Reopen Order"
+                                    closingDishes.contains(item)
+                                    ? "Order Closed"
                                     : "Close Order",
                                 style: const TextStyle(color: Colors.black),
                               ),
@@ -302,6 +306,18 @@ class _OrderScreenState extends State<OrderScreen> {
       ref = FirebaseDatabase.instance.ref(
           'Restaurants/$restaurantId/tische/$formattedTableNum/geschlosseneBestellungen');
     }
+
+    // Cancel the old subscription
+    _subscription?.cancel();
+
+    // Start a new subscription
+    _subscription = ref!.onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      setState(() {
+        orders = getData(snapshot);
+      });
+    });
 
     final snapshot = await ref?.get();
 
