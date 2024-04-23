@@ -199,7 +199,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Text(
                                 curState == States.closed ||
                                     closingDishes.contains(item)
-                                    ? "Order Closed"
+                                    ? "Reopen Order"
                                     : "Close Order",
                                 style: const TextStyle(color: Colors.black),
                               ),
@@ -220,19 +220,23 @@ class _OrderScreenState extends State<OrderScreen> {
 
   //Database
   void setupFirebase() {
-    String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
-    ref = FirebaseDatabase.instance
-        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
+    if (restaurantId != null) {
+      String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
+      ref = FirebaseDatabase.instance
+          .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
-    _subscription = ref!.onValue.listen((event) {
-      var snapshot = event.snapshot.child(curState == States.open
-          ? 'bestellungen'
-          : 'geschlosseneBestellungen');
+      if (ref != null) {
+        _subscription = ref!.onValue.listen((event) {
+          var snapshot = event.snapshot.child(curState == States.open
+              ? 'bestellungen'
+              : 'geschlosseneBestellungen');
 
-      setState(() {
-        orders = getData(snapshot);
-      });
-    });
+          setState(() {
+            orders = getData(snapshot);
+          });
+        });
+      }
+    }
   }
 
   Map<String, String> getData(snapshot) {
@@ -268,15 +272,20 @@ class _OrderScreenState extends State<OrderScreen> {
         } else {
           closingDishes.add(dish);
         }
+        break;
       case States.closed:
-        final snapshot = await ref.child("bestellungen").get();
-        Map<String, String> openOrders = getData(snapshot);
+        final snapshotOpen = await ref.child("bestellungen").get();
+        Map<String, String> openOrders = getData(snapshotOpen);
+
+        final snapshotClosed = await ref.child("geschlosseneBestellungen").get();
+        Map<String, String> closedOrders = getData(snapshotClosed);
 
         await ref.update({
           "bestellungen/$dish": int.parse(openOrders[dish] ?? '0') +
-              int.parse(orders[dish] ?? '0'),
-          "geschlosseneBestellungen/$dish": 0
+              int.parse(closedOrders[dish] ?? '0'),
+          "geschlosseneBestellungen/$dish": null // remove the dish from closed orders
         });
+        break;
     }
   }
 
