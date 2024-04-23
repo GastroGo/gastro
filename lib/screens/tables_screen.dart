@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:gastro/values/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../utils/helpers/navigation_helper.dart';
-import '../utils/helpers/snackbar_helper.dart';
 import '../values/app_strings.dart';
 import 'orders_screen.dart';
+
+enum States { sortByTableNum, sortByElapsedTime }
 
 class TablesScreen extends StatefulWidget {
   @override
@@ -19,6 +18,7 @@ class _TablesScreenState extends State<TablesScreen> {
   Map<String, String> tableNumAndTimer = {};
   String? restaurantId;
   DatabaseReference? ref;
+  States curState = States.sortByTableNum;
 
   Timer? timer;
   DateTime currentTime = DateTime.now();
@@ -85,14 +85,9 @@ class _TablesScreenState extends State<TablesScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              ElevatedButton(
-                onPressed: _sortByTableNum,
-                child: const Text(AppStrings.sortByTableNumber),
-              ),
-              ElevatedButton(
-                onPressed: _sortByElapsedTime,
-                child: const Text(AppStrings.sortByElapsedTime),
-              ),
+              _buildSortButtons(AppStrings.sortByTableNumber, _sortByTableNum),
+              _buildSortButtons(
+                  AppStrings.sortByElapsedTime, _sortByElapsedTime),
             ],
           ),
           Expanded(
@@ -111,6 +106,7 @@ class _TablesScreenState extends State<TablesScreen> {
 
   void _sortByTableNum() {
     setState(() {
+      curState = States.sortByTableNum;
       var entries = tableNumAndTimer.entries.toList();
 
       // Sort the entries based on the table number
@@ -123,8 +119,28 @@ class _TablesScreenState extends State<TablesScreen> {
 
   void _sortByElapsedTime() {
     setState(() {
+      curState = States.sortByElapsedTime;
       tableNumAndTimer = _getSortedTableNumAndTimer();
     });
+  }
+
+  Widget _buildSortButtons(String title, callback) {
+    return ElevatedButton(
+      onPressed: callback,
+      style: ButtonStyle(
+        side: MaterialStateProperty.all(const BorderSide(color: Colors.black)),
+        backgroundColor: MaterialStateProperty.all<Color>(
+            (curState == States.sortByTableNum &&
+                        title == AppStrings.sortByTableNumber) ||
+                    (curState == States.sortByElapsedTime &&
+                        title == AppStrings.sortByElapsedTime)
+                ? Colors.amber
+                : Colors.white54),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+      ),
+      child: Text(title, style: const TextStyle(color: Colors.black)),
+    );
   }
 
   Widget _buildSquareButton(String item) {
@@ -142,7 +158,8 @@ class _TablesScreenState extends State<TablesScreen> {
           // Handle your onTap action here
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => OrderScreen(tableNum: item)),
+            MaterialPageRoute(
+                builder: (context) => OrderScreen(tableNum: item)),
           );
         },
       ),
@@ -152,11 +169,15 @@ class _TablesScreenState extends State<TablesScreen> {
   String getElapsedTime(String tableNum) {
     String lastOrder = tableNumAndTimer[tableNum] ?? '00:00';
 
-    if(lastOrder != "-"){
+    if (lastOrder != "-") {
       // Parse the lastOrder string into a DateTime object
       List<String> parts = lastOrder.split(':');
-      DateTime lastOrderTime = DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, int.parse(parts[0]), int.parse(parts[1]));
+      DateTime lastOrderTime = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          int.parse(parts[0]),
+          int.parse(parts[1]));
 
       // Calculate the elapsed time
       Duration elapsedTime = currentTime.difference(lastOrderTime);
@@ -166,10 +187,9 @@ class _TablesScreenState extends State<TablesScreen> {
           '${elapsedTime.inMinutes.toString().padLeft(2, '0')}:${(elapsedTime.inSeconds % 60).toString().padLeft(2, '0')}';
 
       return elapsedTimeStr;
-    }else{
+    } else {
       return "-";
     }
-
   }
 
   Map<String, String> _getSortedTableNumAndTimer() {
@@ -182,7 +202,8 @@ class _TablesScreenState extends State<TablesScreen> {
 
       Duration elapsedTimeA = _getDuration(a.key);
       Duration elapsedTimeB = _getDuration(b.key);
-      return elapsedTimeB.compareTo(elapsedTimeA); // Reverse the comparison here
+      return elapsedTimeB
+          .compareTo(elapsedTimeA); // Reverse the comparison here
     });
 
     // Convert the sorted entries back to a map

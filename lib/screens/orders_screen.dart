@@ -22,11 +22,11 @@ class _OrderScreenState extends State<OrderScreen> {
   States curState = States.open;
   Map<String, String> orders = {};
   Map<String, String> dishNames = {};
+  List<String> closingDishes = [];
   String? restaurantId;
   DatabaseReference? ref;
   StreamSubscription<DatabaseEvent>? _subscription;
   var prefs;
-
 
   //Overrides
   @override
@@ -38,17 +38,17 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void dispose() {
     _subscription?.cancel();
+    closeOrderEnd();
     super.dispose();
   }
-
 
   //Setup
   Future<void> setupAsync() async {
     await loadRestaurantId();
     prefs = await SharedPreferences.getInstance();
-    try{
+    try {
       getDishNames();
-    } catch(e){
+    } catch (e) {
       print(e);
     }
     loadDishNames();
@@ -62,11 +62,10 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
-  void getDishNames(){
+  void getDishNames() {
     String mapString = prefs.getString('dishNames');
     dishNames = jsonDecode(mapString).cast<String, String>();
   }
-
 
   //Widgets
   @override
@@ -88,25 +87,23 @@ class _OrderScreenState extends State<OrderScreen> {
             child: GridView.count(
               crossAxisCount: 1,
               childAspectRatio: 8 / 2,
-              children:
-                  orders.keys.map((item) => _buildDish(item)).toList(),
+              children: orders.keys.map((item) => _buildDish(item)).toList(),
             ),
           ),
-          _buildButton(AppStrings.bill, Icons.account_balance_rounded, billButtonCallback),
+          _buildButton(AppStrings.bill, Icons.account_balance_rounded,
+              billButtonCallback),
           _buildButton("Add Order", Icons.add_box, addOrderButtonCallback)
         ],
       ),
     );
   }
 
-
-
-  Widget _buildButton(String buttonText, IconData buttonIcon, callback){
+  Widget _buildButton(String buttonText, IconData buttonIcon, callback) {
     return Card(
         color: Colors.amber,
         margin: const EdgeInsets.all(8.0),
         child: InkWell(
-          onTap: (){
+          onTap: () {
             callback();
           },
           child: Padding(
@@ -118,14 +115,16 @@ class _OrderScreenState extends State<OrderScreen> {
                   Icon(buttonIcon, size: 30, color: Colors.black87),
                   Text(
                     " " + buttonText,
-                    style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 30),
+                    style: const TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
                   )
                 ],
               ),
             ),
           ),
-        )
-    );
+        ));
   }
 
   Widget _buildOpenClosedButton(String title, States state) {
@@ -137,8 +136,11 @@ class _OrderScreenState extends State<OrderScreen> {
         });
       },
       style: ButtonStyle(
+        side: MaterialStateProperty.all(const BorderSide(color: Colors.black)),
         backgroundColor: MaterialStateProperty.all<Color>(
-            curState == state ? Colors.amber : Colors.grey),
+            curState == state ? Colors.amber : Colors.white54),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
       ),
       child: Text(title, style: const TextStyle(color: Colors.black)),
     );
@@ -149,6 +151,7 @@ class _OrderScreenState extends State<OrderScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.black, width: 2),
+        color: closingDishes.contains(item) ? Colors.grey : Colors.white,
       ),
       margin: const EdgeInsets.all(8.0),
       child: Column(
@@ -173,7 +176,9 @@ class _OrderScreenState extends State<OrderScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: TextButton(
-                            onPressed: () => closeOpenOrder(item),
+                            onPressed: () => setState(() {
+                              closeOpenOrder(item);
+                            }),
                             style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all<Color?>(
@@ -184,7 +189,8 @@ class _OrderScreenState extends State<OrderScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
-                                curState == States.closed
+                                curState == States.closed ||
+                                        closingDishes.contains(item)
                                     ? "Reopen Order"
                                     : "Close Order",
                                 style: const TextStyle(color: Colors.black),
@@ -204,15 +210,16 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-
   //Database
   void setupFirebase() {
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
-    ref = FirebaseDatabase.instance.ref('Restaurants/$restaurantId/tische/$formattedTableNum');
-
+    ref = FirebaseDatabase.instance
+        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
     _subscription = ref!.onValue.listen((event) {
-      var snapshot = event.snapshot.child(curState == States.open? 'bestellungen':'geschlosseneBestellungen');
+      var snapshot = event.snapshot.child(curState == States.open
+          ? 'bestellungen'
+          : 'geschlosseneBestellungen');
 
       setState(() {
         orders = getData(snapshot);
@@ -245,27 +252,41 @@ class _OrderScreenState extends State<OrderScreen> {
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
     DatabaseReference ref = FirebaseDatabase.instance
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
-    if (curState == States.open) {
 
-      final snapshot = await ref.child("geschlosseneBestellungen").get();
-      Map<String, String> closedOrders = getData(snapshot);
+    switch (curState) {
+      case States.open:
+        if (closingDishes.contains(dish)) {
+          closingDishes.remove(dish);
+        } else {
+          closingDishes.add(dish);
+        }
+      case States.closed:
+        final snapshot = await ref.child("bestellungen").get();
+        Map<String, String> openOrders = getData(snapshot);
 
+        await ref.update({
+          "bestellungen/$dish": int.parse(openOrders[dish] ?? '0') +
+              int.parse(orders[dish] ?? '0'),
+          "geschlosseneBestellungen/$dish": 0
+        });
+    }
+  }
+
+  Future<void> closeOrderEnd() async {
+    String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
+
+    final snapshot = await ref.child("geschlosseneBestellungen").get();
+    Map<String, String> closedOrders = getData(snapshot);
+
+    for (String dish in closingDishes) {
       await ref.update({
-        "geschlosseneBestellungen/$dish": int.parse(closedOrders[dish] ?? '0') + int.parse(orders[dish] ?? '0'),
+        "geschlosseneBestellungen/$dish": int.parse(closedOrders[dish] ?? '0') +
+            int.parse(orders[dish] ?? '0'),
         "bestellungen/$dish": 0
       });
-    } else {
-
-      final snapshot = await ref.child("bestellungen").get();
-      Map<String, String> openOrders = getData(snapshot);
-
-      await ref.update({
-        "bestellungen/$dish": int.parse(openOrders[dish] ?? '0') + int.parse(orders[dish] ?? '0'),
-        "geschlosseneBestellungen/$dish": 0
-      });
     }
-
-    updateData();
   }
 
   void updateData() async {
@@ -286,7 +307,6 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   void loadDishNames() async {
-
     final ref = FirebaseDatabase.instance.ref();
     final snapshot =
         await ref.child('Restaurants/$restaurantId/speisekarte').get();
@@ -304,18 +324,15 @@ class _OrderScreenState extends State<OrderScreen> {
 
     String mapString = jsonEncode(dishNames);
     prefs.setString('dishNames', mapString);
-
   }
 
   //other Functions
 
-  void billButtonCallback(){
+  void billButtonCallback() {
     print("Bill");
   }
 
-  void addOrderButtonCallback(){
+  void addOrderButtonCallback() {
     print("Add Order");
   }
-
-
 }
