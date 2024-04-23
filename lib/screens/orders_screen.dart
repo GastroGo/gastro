@@ -271,11 +271,11 @@ class _OrderScreenState extends State<OrderScreen> {
         }
         break;
       case States.closed:
-        final snapshotOpen = await ref.child("bestellungen").once();
+        final snapshotOpen = await ref.child("bestellungen").get();
         Map<String, String> openOrders = getData(snapshotOpen);
 
         final snapshotClosed =
-            await ref.child("geschlosseneBestellungen").once();
+            await ref.child("geschlosseneBestellungen").get();
         Map<String, String> closedOrders = getData(snapshotClosed);
 
         await ref.update({
