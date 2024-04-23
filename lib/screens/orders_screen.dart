@@ -256,43 +256,56 @@ class _OrderScreenState extends State<OrderScreen> {
     return {};
   }
 
-  Future<void> closeOpenOrder(var dish) async {
-    print("closeOpenOrder function called with dish: $dish");
+  Future<void> closeOpenOrder(String dish) async {
+    try {
+      print("closeOpenOrder function called with dish: $dish");
+      await validateRestaurantId();
+      String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
+
+      switch (curState) {
+        case States.open:
+          handleOpenState(dish);
+          break;
+        case States.closed:
+          await handleClosedState(dish, ref);
+          break;
+      }
+    } catch (e) {
+      print('Error in closeOpenOrder: $e');
+    }
+  }
+
+  void handleOpenState(String dish) {
+    if (closingDishes.contains(dish)) {
+      closingDishes.remove(dish);
+    } else {
+      closingDishes.add(dish);
+    }
+  }
+
+  Future<void> handleClosedState(String dish, DatabaseReference ref) async {
+    final snapshotOpen = await ref.child("bestellungen").get();
+    Map<String, String> openOrders = getData(snapshotOpen);
+
+    final snapshotClosed =
+    await ref.child("geschlosseneBestellungen").get();
+    Map<String, String> closedOrders = getData(snapshotClosed);
+
+    await ref.update({
+      "bestellungen/$dish": int.parse(orders[dish] ?? '0') +
+          int.parse(openOrders[dish]!),
+      "geschlosseneBestellungen/$dish": 0
+    });
+  }
+
+  Future<void> validateRestaurantId() async {
     if (restaurantId == null) {
       await loadRestaurantId();
       if (restaurantId == null) {
-        print('Error: restaurantId is still null after trying to load it');
-        return;
+        throw Exception('Error: restaurantId is still null after trying to load it');
       }
-    }
-    String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
-    DatabaseReference ref = FirebaseDatabase.instance
-        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
-
-    switch (curState) {
-      case States.open:
-        if (closingDishes.contains(dish)) {
-          closingDishes.remove(dish);
-        } else {
-          closingDishes.add(dish);
-        }
-        break;
-      case States.closed:
-        final snapshotOpen = await ref.child("bestellungen").get();
-        Map<String, String> openOrders = getData(snapshotOpen);
-
-        final snapshotClosed =
-        await ref.child("geschlosseneBestellungen").get();
-        Map<String, String> closedOrders = getData(snapshotClosed);
-
-        await ref.update({
-          "bestellungen/$dish": int.parse(orders[dish] ?? '0') +
-              int.parse(openOrders[
-              dish]!), // change the value of the bestellungen child of the according dish from 0 to the value it had in geschlosseneBestellungen
-          "geschlosseneBestellungen/$dish":
-          0 // change the value of the dish in closed orders to 0 instead of removing it
-        });
-        break;
     }
   }
 
