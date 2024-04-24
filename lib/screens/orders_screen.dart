@@ -286,8 +286,6 @@ class _OrderScreenState extends State<OrderScreen> {
 
     final snapshot = await ref.child("geschlosseneBestellungen").once();
     Map<String, String> closedOrders = getData(snapshot.snapshot);
-    print(snapshot);
-    print(closedOrders);
 
     for (String dish in closingDishes) {
       await ref.update({
