@@ -262,19 +262,11 @@ class _OrderScreenState extends State<OrderScreen> {
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
     if (curState == States.open) {
-      // Get the current number of orders for the dish
-      final snapshot = await ref.child("bestellungen/$dish").once();
-      int currentOrders = int.parse(snapshot.snapshot.value?.toString() ?? '0');
-
-      // Get the current number of closed orders for the dish
-      final closedSnapshot = await ref.child("geschlosseneBestellungen/$dish").once();
-      int currentClosedOrders = int.parse(closedSnapshot.snapshot.value?.toString() ?? '0');
-
-      // Move the order from open to closed
-      await ref.update({
-        "bestellungen/$dish": 0,
-        "geschlosseneBestellungen/$dish": currentClosedOrders + currentOrders
-      });
+      if (closingDishes.contains(dish)) {
+        closingDishes.remove(dish);
+      } else {
+        closingDishes.add(dish);
+      }
     } else if (curState == States.closed) {
       // Get the current number of closed orders for the dish
       final snapshot = await ref.child("geschlosseneBestellungen/$dish").once();
