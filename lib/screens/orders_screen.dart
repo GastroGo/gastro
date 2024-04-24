@@ -216,19 +216,23 @@ class _OrderScreenState extends State<OrderScreen> {
 
   //Database
   void setupFirebase() {
-    String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
-    ref = FirebaseDatabase.instance
-        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
+    if (restaurantId != null) {
+      String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
+      ref = FirebaseDatabase.instance
+          .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
-    _subscription = ref!.onValue.listen((event) {
-      var snapshot = event.snapshot.child(curState == States.open
-          ? 'bestellungen'
-          : 'geschlosseneBestellungen');
+      if (ref != null) {
+        _subscription = ref!.onValue.listen((event) {
+          var snapshot = event.snapshot.child(curState == States.open
+              ? 'bestellungen'
+              : 'geschlosseneBestellungen');
 
-      setState(() {
-        orders = getData(snapshot);
-      });
-    });
+          setState(() {
+            orders = getData(snapshot);
+          });
+        });
+      }
+    }
   }
 
   Map<String, String> getData(snapshot) {
@@ -252,27 +256,31 @@ class _OrderScreenState extends State<OrderScreen> {
     return {};
   }
 
-  Future<void> closeOpenOrder(var dish) async {
+  void closeOpenOrder(String dish) async {
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
     DatabaseReference ref = FirebaseDatabase.instance
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
-    switch (curState) {
-      case States.open:
-        if (closingDishes.contains(dish)) {
-          closingDishes.remove(dish);
-        } else {
-          closingDishes.add(dish);
-        }
-      case States.closed:
-        final snapshot = await ref.child("bestellungen").get();
-        Map<String, String> openOrders = getData(snapshot);
+    if (curState == States.open) {
+      if (closingDishes.contains(dish)) {
+        closingDishes.remove(dish);
+      } else {
+        closingDishes.add(dish);
+      }
+    } else if (curState == States.closed) {
+      // Get the current number of closed orders for the dish
+      final snapshot = await ref.child("geschlosseneBestellungen/$dish").once();
+      int currentClosedOrders = int.parse(snapshot.snapshot.value?.toString() ?? '0');
 
-        await ref.update({
-          "bestellungen/$dish": int.parse(openOrders[dish] ?? '0') +
-              int.parse(orders[dish] ?? '0'),
-          "geschlosseneBestellungen/$dish": 0
-        });
+      // Get the current number of orders for the dish
+      final openSnapshot = await ref.child("bestellungen/$dish").once();
+      int currentOrders = int.parse(openSnapshot.snapshot.value?.toString() ?? '0');
+
+      // Move the order from closed to open
+      await ref.update({
+        "geschlosseneBestellungen/$dish": 0,
+        "bestellungen/$dish": currentOrders + currentClosedOrders
+      });
     }
   }
 
@@ -302,6 +310,18 @@ class _OrderScreenState extends State<OrderScreen> {
       ref = FirebaseDatabase.instance.ref(
           'Restaurants/$restaurantId/tische/$formattedTableNum/geschlosseneBestellungen');
     }
+
+    // Cancel the old subscription
+    _subscription?.cancel();
+
+    // Start a new subscription
+    _subscription = ref!.onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      setState(() {
+        orders = getData(snapshot);
+      });
+    });
 
     final snapshot = await ref?.get();
 
