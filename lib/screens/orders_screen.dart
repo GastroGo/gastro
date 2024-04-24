@@ -268,18 +268,13 @@ class _OrderScreenState extends State<OrderScreen> {
         closingDishes.add(dish);
       }
     } else if (curState == States.closed) {
-      // Get the current number of closed orders for the dish
-      final snapshot = await ref.child("geschlosseneBestellungen/$dish").once();
-      int currentClosedOrders = int.parse(snapshot.snapshot.value?.toString() ?? '0');
-
-      // Get the current number of orders for the dish
       final openSnapshot = await ref.child("bestellungen/$dish").once();
-      int currentOrders = int.parse(openSnapshot.snapshot.value?.toString() ?? '0');
+      int currentOrders =
+          int.parse(openSnapshot.snapshot.value?.toString() ?? '0');
 
-      // Move the order from closed to open
       await ref.update({
         "geschlosseneBestellungen/$dish": 0,
-        "bestellungen/$dish": currentOrders + currentClosedOrders
+        "bestellungen/$dish": currentOrders + int.parse(orders[dish]!)
       });
     }
   }
@@ -289,8 +284,10 @@ class _OrderScreenState extends State<OrderScreen> {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
-    final snapshot = await ref.child("geschlosseneBestellungen").get();
-    Map<String, String> closedOrders = getData(snapshot);
+    final snapshot = await ref.child("geschlosseneBestellungen").once();
+    Map<String, String> closedOrders = getData(snapshot.snapshot);
+    print(snapshot);
+    print(closedOrders);
 
     for (String dish in closingDishes) {
       await ref.update({
@@ -311,31 +308,21 @@ class _OrderScreenState extends State<OrderScreen> {
           'Restaurants/$restaurantId/tische/$formattedTableNum/geschlosseneBestellungen');
     }
 
-    // Cancel the old subscription
-    _subscription?.cancel();
-
-    // Start a new subscription
-    _subscription = ref!.onValue.listen((event) {
-      var snapshot = event.snapshot;
-
-      setState(() {
-        orders = getData(snapshot);
-      });
-    });
-
-    final snapshot = await ref?.get();
+    final snapshot = await ref?.once();
 
     setState(() {
-      orders = getData(snapshot);
+      orders = getData(snapshot?.snapshot);
     });
   }
 
   void loadDishNames() async {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot =
-        await ref.child('Restaurants/$restaurantId/speisekarte').get();
+        await ref.child('Restaurants/$restaurantId/speisekarte').once();
 
-    Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+    final sn = snapshot.snapshot;
+
+    Map<dynamic, dynamic> values = sn.value as Map<dynamic, dynamic>;
     for (var entry in values.entries) {
       Map<dynamic, dynamic> dishDetails = entry.value as Map<dynamic, dynamic>;
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _TablesScreenState extends State<TablesScreen> {
   @override
   void initState() {
     super.initState();
+    loadLastTables();
     loadRestaurantId();
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       setState(() {
@@ -71,6 +73,7 @@ class _TablesScreenState extends State<TablesScreen> {
   @override
   void dispose() {
     timer?.cancel();
+    safeLastTables();
     super.dispose();
   }
 
@@ -226,5 +229,21 @@ class _TablesScreenState extends State<TablesScreen> {
 
     // Calculate the elapsed time
     return currentTime.difference(lastOrderTime);
+  }
+
+  void loadLastTables() async {
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      String? mapString = prefs.getString('lastTables');
+      tableNumAndTimer = jsonDecode(mapString!).cast<String, String>();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void safeLastTables() async {
+    var prefs = await SharedPreferences.getInstance();
+    String mapString = jsonEncode(tableNumAndTimer);
+    prefs.setString('lastTables', mapString);
   }
 }
