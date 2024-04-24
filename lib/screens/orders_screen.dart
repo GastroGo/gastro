@@ -256,7 +256,41 @@ class _OrderScreenState extends State<OrderScreen> {
     return {};
   }
 
+  void closeOpenOrder(String dish) async {
+    String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
+    if (curState == States.open) {
+      // Get the current number of orders for the dish
+      final snapshot = await ref.child("bestellungen/$dish").get();
+      int currentOrders = int.parse(snapshot.value?.toString() ?? '0');
+
+      // Get the current number of closed orders for the dish
+      final closedSnapshot = await ref.child("geschlosseneBestellungen/$dish").get();
+      int currentClosedOrders = int.parse(closedSnapshot.value?.toString() ?? '0');
+
+      // Move the order from open to closed
+      await ref.update({
+        "bestellungen/$dish": 0,
+        "geschlosseneBestellungen/$dish": currentClosedOrders + currentOrders
+      });
+    } else if (curState == States.closed) {
+      // Get the current number of closed orders for the dish
+      final snapshot = await ref.child("geschlosseneBestellungen/$dish").get();
+      int currentClosedOrders = int.parse(snapshot.value?.toString() ?? '0');
+
+      // Get the current number of orders for the dish
+      final openSnapshot = await ref.child("bestellungen/$dish").get();
+      int currentOrders = int.parse(openSnapshot.value?.toString() ?? '0');
+
+      // Move the order from closed to open
+      await ref.update({
+        "geschlosseneBestellungen/$dish": 0,
+        "bestellungen/$dish": currentOrders + currentClosedOrders
+      });
+    }
+  }
 
   Future<void> closeOrderEnd() async {
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
