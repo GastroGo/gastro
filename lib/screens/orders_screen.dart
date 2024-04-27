@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:gastro/firebase/RealTimeDatabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../values/app_strings.dart';
@@ -27,6 +28,7 @@ class _OrderScreenState extends State<OrderScreen> {
   DatabaseReference? ref;
   StreamSubscription<DatabaseEvent>? _subscription;
   var prefs;
+  RealTimeDatabase database = RealTimeDatabase();
 
   //Overrides
   @override
@@ -228,32 +230,11 @@ class _OrderScreenState extends State<OrderScreen> {
               : 'geschlosseneBestellungen');
 
           setState(() {
-            orders = getData(snapshot);
+            orders = database.extractDataToStringMap(snapshot);
           });
         });
       }
     }
-  }
-
-  Map<String, String> getData(snapshot) {
-    if (snapshot?.value != null) {
-      if (snapshot?.value is Map<dynamic, dynamic>) {
-        Map<dynamic, dynamic> values = snapshot?.value as Map<dynamic, dynamic>;
-
-        // Convert the Map<dynamic, dynamic> to Map<String, String>
-        Map<String, String> stringMap = values
-            .map((key, value) => MapEntry(key.toString(), value.toString()));
-        // Filter out entries with 0 orders
-        stringMap.removeWhere((key, value) => value == '0');
-
-        // Sort the entries based on the keys
-        var entries = stringMap.entries.toList()
-          ..sort((a, b) => a.key.compareTo(b.key));
-
-        return Map.fromEntries(entries);
-      }
-    }
-    return {};
   }
 
   void closeOpenOrder(String dish) async {
@@ -285,7 +266,8 @@ class _OrderScreenState extends State<OrderScreen> {
         .ref('Restaurants/$restaurantId/tische/$formattedTableNum');
 
     final snapshot = await ref.child("geschlosseneBestellungen").once();
-    Map<String, String> closedOrders = getData(snapshot.snapshot);
+    Map<String, String> closedOrders =
+        database.extractDataToStringMap(snapshot.snapshot);
 
     for (String dish in closingDishes) {
       await ref.update({
@@ -298,29 +280,20 @@ class _OrderScreenState extends State<OrderScreen> {
 
   void updateData() async {
     String formattedTableNum = 'T${widget.tableNum.padLeft(3, '0')}';
-    if (curState == States.open) {
-      ref = FirebaseDatabase.instance.ref(
-          'Restaurants/$restaurantId/tische/$formattedTableNum/bestellungen');
-    } else {
-      ref = FirebaseDatabase.instance.ref(
-          'Restaurants/$restaurantId/tische/$formattedTableNum/geschlosseneBestellungen');
-    }
 
-    final snapshot = await ref?.once();
-
+    Map<String, String> updatedOrders = await database.getDataOnce(curState ==
+            States.open
+        ? 'Restaurants/$restaurantId/tische/$formattedTableNum/bestellungen'
+        : 'Restaurants/$restaurantId/tische/$formattedTableNum/geschlosseneBestellungen');
     setState(() {
-      orders = getData(snapshot?.snapshot);
+      orders = updatedOrders;
     });
   }
 
   void loadDishNames() async {
-    final ref = FirebaseDatabase.instance.ref();
-    final snapshot =
-        await ref.child('Restaurants/$restaurantId/speisekarte').once();
+    final values =
+        await database.getDataOnce('Restaurants/$restaurantId/speisekarte');
 
-    final sn = snapshot.snapshot;
-
-    Map<dynamic, dynamic> values = sn.value as Map<dynamic, dynamic>;
     for (var entry in values.entries) {
       Map<dynamic, dynamic> dishDetails = entry.value as Map<dynamic, dynamic>;
 
