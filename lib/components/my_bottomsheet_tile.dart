@@ -42,7 +42,7 @@ class _BottomSheetTileState extends State<BottomSheetTile> {
 
   void _decrease(){
     setState(() {
-      if (_amount > 0) {
+      if (_amount > 1) {
         _amount--;
       }
     });

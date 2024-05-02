@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gastro/Firebase/database.dart';
 import 'package:gastro/components/my_dish_tile.dart';
-import 'package:gastro/components/BottomSheet/my_bottomsheet_tile.dart';
+import 'package:gastro/components/my_bottomsheet_tile.dart';
 import 'package:gastro/components/paybutton.dart';
 import 'package:gastro/data/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
