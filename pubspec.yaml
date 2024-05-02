@@ -19,6 +19,13 @@ dependencies:
   shared_preferences: ^2.2.2
   location: ^5.0.0
   geocoding: ^2.1.1
+  qr_code_scanner: ^1.0.1
+  open_file: ^3.3.2
+  qr_flutter: ^4.1.0
+  pdf: ^3.0.1
+  path_provider: ^2.0.8
+  image: ^4.1.6
+  pay: ^2.0.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
