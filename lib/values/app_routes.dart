@@ -10,4 +10,5 @@ class AppRoutes {
   static const String tables = 'tables';
   static const String employees = 'employees';
   static const String qrcodes = 'qrcodes';
+  static const String qrcodescanner = 'qrcodescanner';
 }

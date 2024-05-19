@@ -6,6 +6,7 @@ import 'package:gastro/screens/employees_screen.dart';
 import 'package:gastro/screens/home_screen.dart';
 import 'package:gastro/screens/login_screen.dart';
 import 'package:gastro/screens/menu_screen.dart';
+import 'package:gastro/screens/qr_scanner_screen.dart';
 import 'package:gastro/screens/qrcodes_screen.dart';
 import 'package:gastro/screens/register_screen.dart';
 import 'package:gastro/screens/tables_screen.dart';
@@ -55,6 +56,9 @@ class Routes {
 
       case AppRoutes.qrcodes:
         return getRoute(widget: QRCodesScreen());
+
+      case AppRoutes.qrcodescanner:
+        return getRoute(widget: QRScanner());
 
       /// An invalid route. User shouldn't see this,
       /// it's for debugging purpose only.

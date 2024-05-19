@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -134,9 +136,7 @@ class _HomepageState extends State<Homepage> {
             label: const Text(AppStrings.logout),
             onPressed: () async {
               await _auth.signOut();
-              NavigationHelper.pushReplacementNamed(
-                AppRoutes.login,
-              );
+              NavigationHelper.pushReplacementNamed(AppRoutes.login);
             },
           ),
         ],
@@ -146,7 +146,7 @@ class _HomepageState extends State<Homepage> {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: _currentP == null ? const Center(child: Text('Loading...'),): GoogleMap(
+            child: _currentP == null ? const Center(child: Text('Loading...')) : GoogleMap(
               onMapCreated: _onMapCreated,
               myLocationEnabled: true,
               initialCameraPosition: CameraPosition(
@@ -154,6 +154,18 @@ class _HomepageState extends State<Homepage> {
                 zoom: 11.0,
               ),
               markers: Set<Marker>.of(markers),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: FloatingActionButton(
+              onPressed: () {
+                NavigationHelper.pushNamed(AppRoutes.qrcodescanner);
+              },
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              child: const Icon(Icons.qr_code_scanner),
             ),
           ),
         ],
@@ -194,15 +206,18 @@ class _HomepageState extends State<Homepage> {
     return LatLng(locations.first.latitude, locations.first.longitude);
   }
 
+  StreamSubscription<LocationData>? _locationSubscription;
+
   Future<void> getLocationUpdates() async {
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
     _serviceEnabled = await _locationController.serviceEnabled();
-    if (_serviceEnabled) {
+    if (!_serviceEnabled) {
       _serviceEnabled = await _locationController.requestService();
-    } else {
-      return;
+      if (!_serviceEnabled) {
+        return;
+      }
     }
 
     _permissionGranted = await _locationController.hasPermission();
@@ -213,13 +228,21 @@ class _HomepageState extends State<Homepage> {
       }
     }
 
-    _locationController.onLocationChanged.listen((LocationData currentLocation) {
-        if (currentLocation.latitude != null && currentLocation.longitude != null) {
+    _locationSubscription = _locationController.onLocationChanged.listen((LocationData currentLocation) {
+      if (currentLocation.latitude != null && currentLocation.longitude != null) {
+        if (mounted) {
           setState(() {
             _currentP = LatLng(currentLocation.latitude!, currentLocation.longitude!);
           });
         }
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
   }
 }
 

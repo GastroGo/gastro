@@ -138,92 +138,95 @@ class _MyAppbarState extends State<MyAppbar> {
       flexibleSpace: FlexibleSpaceBar(
         title: Padding(
           padding: const EdgeInsets.only(top: 76, left: 30, right: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FutureBuilder<String>(
-                    future: widget.restaurantNameFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return Text(
-                          snapshot.data ?? '',
-                          style: TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w700, fontSize: 25),
-                        );
-                      } else {
-                        return const Text(
-                          'Loading...',
-                          style: TextStyle(color: Colors.white),
-                        );
-                      }
-                    },
-                  ),
-                  GestureDetector(
-                    onTap: _showShoppingCart,
-                    child: Container(
-                      width: 55,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.grey.shade200
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FutureBuilder<String>(
+                      future: widget.restaurantNameFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return Text(
+                            snapshot.data ?? '',
+                            style: TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w700, fontSize: 25),
+                          );
+                        } else {
+                          return const Text(
+                            'Loading...',
+                            style: TextStyle(color: Colors.white),
+                          );
+                        }
+                      },
+                    ),
+                    GestureDetector(
+                      onTap: _showShoppingCart,
+                      child: Container(
+                        width: 55,
+                        height: 35,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey.shade200
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.shopping_cart_outlined, size: 18, ),
+                            SizedBox(width: 6,),
+                            Text(
+                              fetchedGerichtList.length.toString(),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black
+                              ),
+                            ),
+
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.shopping_cart_outlined, size: 18, ),
-                          SizedBox(width: 6,),
-                          Text(
-                            fetchedGerichtList.length.toString(),
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: 400,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: Colors.grey.shade800,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 14),
+                    child: Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Icon(Icons.zoom_in, color: Colors.grey),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            style: const TextStyle(color: Colors.white),
+                            cursorColor: Theme.of(context).primaryColorLight,
+                            decoration: const InputDecoration(
+                              hintText: 'Search for something tasty...',
+                              hintStyle: TextStyle(color: Colors.white70),
+                              border: InputBorder.none,
                             ),
                           ),
 
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Container(
-                width: 400,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: Colors.grey.shade800,
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 14),
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Icon(Icons.zoom_in, color: Colors.grey),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          style: const TextStyle(color: Colors.white),
-                          cursorColor: Theme.of(context).primaryColorLight,
-                          decoration: const InputDecoration(
-                            hintText: 'Search for something tasty...',
-                            hintStyle: TextStyle(color: Colors.white70),
-                            border: InputBorder.none,
-                          ),
-                        ),
-
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
