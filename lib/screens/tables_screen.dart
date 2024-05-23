@@ -17,6 +17,7 @@ class TablesScreen extends StatefulWidget {
 
 class _TablesScreenState extends State<TablesScreen> {
   Map<String, String> tableNumAndTimer = {};
+  Map<String, int> tableNumAndStatus = {};
   String? restaurantId;
   DatabaseReference? ref;
   States curState = States.sortByTableNum;
@@ -63,6 +64,14 @@ class _TablesScreenState extends State<TablesScreen> {
             String lastOrder = entry.value['letzteBestellung'];
             return MapEntry(tableNum, lastOrder);
           }));
+
+          tableNumAndStatus = Map.fromEntries(entries.map((entry) {
+            String tableNum =
+                int.parse(entry.key.toString().substring(1)).toString();
+            int status = entry.value['status'];
+            return MapEntry(tableNum, status);
+          }));
+          print(tableNumAndStatus);
         });
       } catch (e) {
         print('Error in setupFirebase: $e');
@@ -151,7 +160,11 @@ class _TablesScreenState extends State<TablesScreen> {
   Widget _buildSquareButton(String item) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.amber,
+        color: tableNumAndStatus[item] == 0
+            ? Colors.grey
+            : tableNumAndStatus[item] == 1
+                ? Colors.amber
+                : Colors.red, //Colors.amber
         borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.all(8.0),
